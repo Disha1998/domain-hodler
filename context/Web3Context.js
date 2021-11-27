@@ -83,7 +83,7 @@ export const Web3ContextProvider = (props) => {
         console.log("No data found");
       }
     });
-    console.log(datad, "asdasd");
+    
   }
 
   async function connectWallet() {
@@ -157,7 +157,7 @@ export const Web3ContextProvider = (props) => {
         const tokenUri = await tokenContract.tokenURI(i.tokenId);
         const meta = await axios.get(tokenUri);
         let price = web3.utils.fromWei(i.price.toString(), "ether");
-        console.log(meta.data.description,"description");
+         
         let item = {
           price,
           tokenId: i.tokenId.toNumber(),
@@ -169,8 +169,7 @@ export const Web3ContextProvider = (props) => {
         };
         return item;
       })
-    );
-    console.log("items: ", items);
+    ); 
     setNfts(items);
     setLoadingState(true);
   }
@@ -192,8 +191,7 @@ export const Web3ContextProvider = (props) => {
       data.map(async (i) => {
         const tokenUri = await tokenContract.tokenURI(i.tokenId);
         const meta = await axios.get(tokenUri);
-        let price = web3.utils.fromWei(i.price.toString(), "ether");
-        console.log(meta.data.description,"description");
+        let price = web3.utils.fromWei(i.price.toString(), "ether"); 
         let item = {
           price,
           name: meta.data.name,
@@ -210,18 +208,13 @@ export const Web3ContextProvider = (props) => {
     setMyNftLoadingState(true);
   }
 
-  async function buyNft(nft) {
-    console.log(nft,"jaydip");
+  async function buyNft(nft) { 
     setLoader(true);
     try {
       const web3Modal = new Web3Modal();
       const connection = await web3Modal.connect();
-      const provider = new ethers.providers.Web3Provider(connection);
-
-      console.log(provider,"provider");
-
-      const signer = provider.getSigner();
-      console.log(signer,"signer");
+      const provider = new ethers.providers.Web3Provider(connection); 
+      const signer = provider.getSigner(); 
       const contract = new ethers.Contract(
         nftmarketaddress,
         Market.abi,
