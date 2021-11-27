@@ -95,11 +95,15 @@ function Header() {
                   <span id="menu-btn" />
                 </div> :   <div className="profile_name">  
                             <span id="wallet" className="profile_wallet" style={{ color:"#eee" }}>
-                              {currentAddress ? currentAddress : "0x71a06125a260d33aa2F0F61ceac539a84E64c675"}
+                              {currentAddress ? currentAddress : <a className="btn-main" onClick={() => connectWallet()}>
+                    <i className="icon_wallet_alt"></i>
+                    <span>Connect Wallet</span>
+                  </a>}
                             </span>
                             {/* <button type="button" id="btn_copy" title="Copy Text">
                               Copy
                             </button>  */}
+                             <span id="menu-btn" />
                         </div>}
               </div>
             </div>

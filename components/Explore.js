@@ -14,8 +14,9 @@ function Explore() {
     <div className="no-bottom no-top" id="content">
       <div id="top" />
       {}
-      <section id="subheader" className="bg-container">
-        <div className="center-y relative text-center">
+      <section id="subheader" className="text-light bg-container">
+
+      <div className="center-y relative text-center">
           <div className="container">
             <div className="row">
               <div className="col-md-12 text-center">
@@ -24,7 +25,7 @@ function Explore() {
               <div className="clearfix" />
             </div>
           </div>
-        </div>
+        </div> 
       </section>
       {}
       {}
@@ -71,7 +72,7 @@ function Explore() {
                               <h4>{nft.name}</h4>
                             </a>
                             <div className="nft__item_price">
-                              {nft.price} ETH<span>1/20</span>
+                              {nft.price} MATIC<span>1/20</span>
                             </div>
                             <div
                               className="nft__item_action"

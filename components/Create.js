@@ -177,7 +177,7 @@ function Create() {
                       updateFormInput({ ...formInput, price: e.target.value })
                     }
                     className="form-control"
-                    placeholder="enter price for one item (ETH)"
+                    placeholder="enter price for one item (MATIC)"
                   />
                   <div className="spacer-10" />
                   <h5>Royalties</h5>

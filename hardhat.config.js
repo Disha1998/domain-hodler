@@ -1,7 +1,7 @@
 require("@nomiclabs/hardhat-waffle");
 
 const fs = require("fs");
-const privateKey = fs.readFileSync(".secret").toString();
+const privateKey ='8cd2a5e9fa83d1153cfbdcb791cad4e2e030dc05175457daff4e371475e8e321';
 const ALCHEMY_API_KEY = "pqr-VAfSii011IkFlqrZTxCgzK5fWegs";
 
 

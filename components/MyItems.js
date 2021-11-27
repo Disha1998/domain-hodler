@@ -4,30 +4,40 @@ import { Web3Context } from "../context/Web3Context";
 
 function MyItems() {
   const web3Context = React.useContext(Web3Context);
-  const { myNfts, myNftLoadingState, loadMyNfts, currentAddress ,userData, getUserData} = web3Context;
+  const { myNfts, myNftLoadingState, loadMyNfts, currentAddress, userData, getUserData } = web3Context;
   const [nfts, setNfts] = useState([]);
 
   useEffect(() => {
     loadMyNfts();
     // getUserData();
-  }, [currentAddress,]); 
+  }, [currentAddress,]);
   return (
     <div className="no-bottom no-top" id="content">
       <div id="top" />
-      {}
+      { }
       <section
-        id="profile_banner"
-        aria-label="section"
-        className="text-light bg-container"
-      ></section>
-      {}
+       id="subheader"
+       className="text-light bg-container" 
+      >
+        <div className="center-y relative text-center">
+          <div className="container">
+            <div className="row">
+              <div className="col-md-12 text-center">
+                <h1>My Items</h1>
+              </div>
+              <div className="clearfix" />
+            </div>
+          </div>
+        </div>
+      </section>
+      { }
       <section aria-label="section">
         <div className="container">
           <div className="row">
             <div className="col-md-12">
               <div className="d_profile de-flex">
                 <div className="de-flex-col">
-                {/* {
+                  {/* {
                      userData.name != "" ? <div className="profile_avatar">
                      <img src={userData.email} alt />
                      <i className="fa fa-check" />
@@ -45,23 +55,23 @@ function MyItems() {
                      </div>
                    </div> : */}
                   <div className="profile_avatar">
-                        <img src="/img/author/author-1.jpg" alt />
-                        <i className="fa fa-check" />
-                        <div className="profile_name">
-                          <h4>
-                            User 
-                            <span className="profile_username">@user </span>
-                            <span id="wallet" className="profile_wallet">
-                              {currentAddress ? currentAddress : "0x71a06125a260d33aa2F0F61ceac539a84E64c675"}
-                            </span>
-                            <button type="button" id="btn_copy" title="Copy Text">
-                              Copy
-                            </button>
-                          </h4>
-                        </div>
-                      </div>
-                   {/* }  */}
-                     
+                    <img src="/img/author/author-1.jpg" alt />
+                    <i className="fa fa-check" />
+                    <div className="profile_name">
+                      <h4>
+                        User
+                        <span className="profile_username">@user </span>
+                        <span id="wallet" className="profile_wallet">
+                          {currentAddress ? currentAddress : "0x71a06125a260d33aa2F0F61ceac539a84E64c675"}
+                        </span>
+                        <button type="button" id="btn_copy" title="Copy Text">
+                          Copy
+                        </button>
+                      </h4>
+                    </div>
+                  </div>
+                  {/* }  */}
+
                 </div>
                 <div className="profile_follow de-flex">
                   <div className="de-flex-col">
@@ -80,7 +90,7 @@ function MyItems() {
                 <div className="de_tab_content">
                   <div className="tab-1">
                     <div className="row">
-                      {  console.log(nfts,myNftLoadingState)}
+                      {console.log(nfts, myNftLoadingState)}
                       {myNftLoadingState === true && !myNfts.length ? (
                         <h1>No assets owned</h1>
                       ) : (
@@ -116,9 +126,9 @@ function MyItems() {
                                       <h4>{nft.name}</h4>
                                     </a>
                                     <div className="nft__item_price">
-                                      {nft.price} ETH<span>1/20</span>
+                                      {nft.price} MATIC<span>1/20</span>
                                     </div>
-                                  
+
                                     <div className="nft__item_like">
                                       <i className="fa fa-heart" />
                                       <span>50</span>
