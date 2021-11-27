@@ -1,0 +1,19 @@
+.custom-icon{
+    height: 28px;
+}
+
+.bg-icon{
+    height: 240px;
+}
+.slick-slide.slick-cloned,.slick-slide.slick-active {
+    width: 305.25px;
+    margin-right: 25px;
+}
+
+.bg-container{
+    background-image: url(/img/background/subheader.jpg);
+}
+
+.bg-myitems{
+    background: url(/img/author_single/author_banner.jpg) center top / cover;
+}
