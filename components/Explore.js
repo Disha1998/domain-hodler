@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 
 import { Web3Context } from "../context/Web3Context";
+import Link from "next/link";
 
 function Explore() {
   const web3Context = React.useContext(Web3Context);
@@ -68,12 +69,24 @@ function Explore() {
                             </a>
                           </div>
                           <div className="nft__item_info">
-                            <a href="item-details.html">
+                            <Link
+                            href={{
+                              pathname: "details",
+                              query: { 
+                                  image: nft.image,
+                                  description: nft.description,
+                                  seller: nft.seller,
+                                  tokenId:nft.tokenId,
+                                  name: nft.name,
+                                  price: nft.price,  
+                              }
+                          }} 
+                            >
                               <h4>{nft.name}</h4>
-                            </a>
+                            </Link>
                             <div className="nft__item_price">
                               {nft.price} MATIC<span>1/20</span>
-                            </div>
+                             </div>
                             <div
                               className="nft__item_action"
                               onClick={() => buyNft(nft)}

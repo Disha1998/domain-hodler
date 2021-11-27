@@ -16,8 +16,8 @@ function MyItems() {
       <div id="top" />
       { }
       <section
-       id="subheader"
-       className="text-light bg-container" 
+        id="subheader"
+        className="text-light bg-container"
       >
         <div className="center-y relative text-center">
           <div className="container">
@@ -122,7 +122,17 @@ function MyItems() {
                                     </a>
                                   </div>
                                   <div className="nft__item_info">
-                                    <a href="#">
+                                    <a href={{
+                                      pathname: "details",
+                                      query: {
+                                        image: nft.image,
+                                        description: nft.description,
+                                        seller: nft.seller,
+                                        tokenId: nft.tokenId,
+                                        name: nft.name,
+                                        price: nft.price,
+                                      }
+                                    }} >
                                       <h4>{nft.name}</h4>
                                     </a>
                                     <div className="nft__item_price">

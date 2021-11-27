@@ -48,10 +48,10 @@ export const Web3ContextProvider = (props) => {
     let web3 = new Web3();
     firebase();
 
-    window.ethereum.enable().then(function (accounts) {
-      setCurrentAddress(web3.utils.toChecksumAddress(accounts[0]));
-      firebase();
-    });
+    // window.ethereum.enable().then(function (accounts) {
+    //   setCurrentAddress(web3.utils.toChecksumAddress(accounts[0]));
+    //   firebase();
+    // });
 
     window.ethereum.on("accountsChanged", function (accounts) {
       setCurrentAddress(web3.utils.toChecksumAddress(accounts[0]));
@@ -151,18 +151,18 @@ export const Web3ContextProvider = (props) => {
       Market.abi,
       provider
     );
-    const data = await marketContract.fetchMarketItems();
-
+    const data = await marketContract.fetchMarketItems(); 
     const items = await Promise.all(
       data.map(async (i) => {
         const tokenUri = await tokenContract.tokenURI(i.tokenId);
         const meta = await axios.get(tokenUri);
         let price = web3.utils.fromWei(i.price.toString(), "ether");
-
+        console.log(meta.data.description,"description");
         let item = {
           price,
           tokenId: i.tokenId.toNumber(),
           name: meta.data.name,
+          description: meta.data.description,
           seller: i.seller,
           owner: i.owner,
           image: meta.data.image,
@@ -193,11 +193,12 @@ export const Web3ContextProvider = (props) => {
         const tokenUri = await tokenContract.tokenURI(i.tokenId);
         const meta = await axios.get(tokenUri);
         let price = web3.utils.fromWei(i.price.toString(), "ether");
-
+        console.log(meta.data.description,"description");
         let item = {
           price,
           name: meta.data.name,
           tokenId: i.tokenId.toNumber(),
+          description: meta.data.description,
           seller: i.seller,
           owner: i.owner,
           image: meta.data.image,
@@ -210,13 +211,17 @@ export const Web3ContextProvider = (props) => {
   }
 
   async function buyNft(nft) {
+    console.log(nft,"jaydip");
     setLoader(true);
     try {
       const web3Modal = new Web3Modal();
       const connection = await web3Modal.connect();
       const provider = new ethers.providers.Web3Provider(connection);
 
+      console.log(provider,"provider");
+
       const signer = provider.getSigner();
+      console.log(signer,"signer");
       const contract = new ethers.Contract(
         nftmarketaddress,
         Market.abi,
