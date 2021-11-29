@@ -11,7 +11,7 @@ function Header() {
   const [isSticky, setSticky] = useState(false);
   const ref = useRef(null);
   const handleScroll = () => {
-    if (ref.current) { 
+    if (ref.current) {
       setSticky(ref.current.getBoundingClientRect().top <= 0);
     }
   };
@@ -23,13 +23,11 @@ function Header() {
       window.removeEventListener("scroll", () => handleScroll);
     };
   }, []);
- 
+
   return (
     <header
       className={`transparent ${
-        router.asPath == '/' 
-          ? "header-dark"
-          : "header-blue"
+        router.asPath == "/" ? "header-dark" : "header-blue"
       } scroll-light`}
     >
       <div className="container">
@@ -38,31 +36,37 @@ function Header() {
             <div className="de-flex sm-pt10">
               <div className="de-flex-col">
                 <div className="de-flex-col">
-                  { }
+                  {}
                   <div id="logo">
                     <a href="">
                       <img
                         alt="image"
                         className="logo"
                         src={`/img/${
-                          router.asPath == '/explore' ||
-                          router.asPath == '/create' ||
-                          router.asPath == '/profile' ||
-                          router.asPath == '/my-items'  ? "logo5.png" : "logo5.png"
-                         }`}
+                          router.asPath == "/explore" ||
+                          router.asPath == "/create" ||
+                          router.asPath == "/profile" ||
+                          router.asPath == "/my-items"
+                            ? "logo5.png"
+                            : "logo5.png"
+                        }`}
                       />
-                      <img alt="image" className="logo-2" src="/img/logo5.png" />
+                      <img
+                        alt="image"
+                        className="logo-2"
+                        src="/img/logo5.png"
+                      />
                     </a>
                   </div>
-                  { }
+                  {}
                 </div>
               </div>
               <div className="de-flex-col header-col-mid">
-                { }
-                <ul id="mainmenu" className={` ${isSticky
-                  ? ""
-                  : "header-dark-text"
-                  }`}>
+                {}
+                <ul
+                  id="mainmenu"
+                  className={` ${isSticky ? "" : "header-dark-text"}`}
+                >
                   <li>
                     <Link href="/">Home</Link>
                   </li>
@@ -87,24 +91,40 @@ function Header() {
                   </li> */}
                 </ul>
 
-                {currentAddress === "" ? <div className="menu_side_area" id="connect">
-                  <a className="btn-main" onClick={() => connectWallet()}>
-                    <i className="icon_wallet_alt"></i>
-                    <span>Connect Wallet</span>
-                  </a>
-                  <span id="menu-btn" />
-                </div> :   <div className="profile_name">  
-                            <span id="wallet" className="profile_wallet" style={{ color:"#eee" }}>
-                              {currentAddress ? currentAddress : <a className="btn-main" onClick={() => connectWallet()}>
-                    <i className="icon_wallet_alt"></i>
-                    <span>Connect Wallet</span>
-                  </a>}
-                            </span>
-                            {/* <button type="button" id="btn_copy" title="Copy Text">
+                {currentAddress === "" ? (
+                  <div
+                    className="menu_side_area"
+                    id="connect"
+                    onClick={() => connectWallet()}
+                  >
+                    <a className="btn-main">
+                      <i className="icon_wallet_alt"></i>
+                      <span>Connect Wallet</span>
+                    </a>
+                    <span id="menu-btn" />
+                  </div>
+                ) : (
+                  <div className="profile_name">
+                    <span
+                      id="wallet"
+                      className="profile_wallet"
+                      style={{ color: "#eee" }}
+                    >
+                      {currentAddress ? (
+                        currentAddress
+                      ) : (
+                        <a className="btn-main">
+                          <i className="icon_wallet_alt"></i>
+                          <span>Connect Wallet</span>
+                        </a>
+                      )}
+                    </span>
+                    {/* <button type="button" id="btn_copy" title="Copy Text">
                               Copy
                             </button>  */}
-                             <span id="menu-btn" />
-                        </div>}
+                    <span id="menu-btn" />
+                  </div>
+                )}
               </div>
             </div>
           </div>

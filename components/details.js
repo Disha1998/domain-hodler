@@ -4,7 +4,7 @@ import { Web3Context } from "../context/Web3Context";
 
 function NftDetails ({ router: { query } })  {
     const web3Context = React.useContext(Web3Context);
-    const { nfts, loadingState, loadNFTs, buyNft, loader } = web3Context; 
+    const { buyNft, loader } = web3Context; 
     return (
         <>
             <div className="no-bottom no-top" id="content">
@@ -87,7 +87,7 @@ function NftDetails ({ router: { query } })  {
                                         </div>
 
                                         <div className="spacer-10 mt-3"></div>
-                                        <div  className="btn-main btn-lg" >
+                                        <div  className="btn-main btn-lg"  onClick={() => buyNft(query)}>
                                             Buy Now
                                         </div>
                                         &nbsp; 
