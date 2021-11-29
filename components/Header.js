@@ -91,7 +91,7 @@ function Header() {
                   </li> */}
                 </ul>
 
-                {currentAddress === "" ? (
+                {currentAddress === "" || currentAddress === "null" || currentAddress === null ? (
                   <div
                     className="menu_side_area"
                     id="connect"

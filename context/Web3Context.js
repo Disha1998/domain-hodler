@@ -48,7 +48,12 @@ export const Web3ContextProvider = (props) => {
     // });
 
     window.ethereum.on("accountsChanged", function (accounts) {
-      setCurrentAddress(web3.utils.toChecksumAddress(accounts[0]));
+      if (accounts.length > 0) setCurrentAddress(accounts[0]);
+      else {
+        setCurrentAddress("");
+        localStorage.setItem("account", null);
+      }
+
       loadMyNfts();
       getUserFirebaseData();
       // getUserFirebaseData(db);
@@ -66,7 +71,6 @@ export const Web3ContextProvider = (props) => {
         console.log("No data found");
       }
     });
-
   }
 
   async function connectWallet() {
@@ -75,9 +79,11 @@ export const Web3ContextProvider = (props) => {
       try {
         window.ethereum.enable().then(function (accounts) {
           setCurrentAddress(accounts[0]);
+          localStorage.setItem("account", accounts[0]);
 
           window.ethereum.on("accountsChanged", function (accounts) {
             setCurrentAddress(accounts[0]);
+            localStorage.setItem("account", accounts[0]);
           });
         });
       } catch (e) {
@@ -221,6 +227,7 @@ export const Web3ContextProvider = (props) => {
       setLoader(false);
     } catch (error) {
       console.log("err jj", error);
+      console.log("err", error);
     }
   }
 
