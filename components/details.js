@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
 import { withRouter } from 'next/router';
 import { Web3Context } from "../context/Web3Context";
+import { Avatar, Fab } from '@material-ui/core';
 
-function NftDetails ({ router: { query } })  {
+function NftDetails({ router: { query } }) {
     const web3Context = React.useContext(Web3Context);
-    const { buyNft, loader } = web3Context; 
+    const { buyNft, loader } = web3Context;
     return (
         <>
             <div className="no-bottom no-top" id="content">
@@ -47,16 +48,19 @@ function NftDetails ({ router: { query } })  {
                                             <div className="item_author">
                                                 <div className="author_list_pp">
                                                     <a href="">
-                                                        <img alt="nft-img" className="lazy" src="/img/author/author-1.jpg" alt="" />
+                                                        <Fab size="small" color="secondary" className="ml-3 font-weight-bold">
+                                                            {/* {profile.initials} */}
+                                                        </Fab>
+                                                        {/* <img alt="nft-img" className="lazy" src="/img/author/author-1.jpg" alt="" /> */}
                                                         <i className="fa fa-check"></i>
                                                     </a>
                                                 </div>
                                                 <div className="author_list_info">
-                                                    <a href="">Monica Lucas</a>
+                                                    <a href="">{query.name}</a>
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                     </div>
 
                                     <div className="spacer-40"></div>
@@ -82,15 +86,15 @@ function NftDetails ({ router: { query } })  {
                                                     <div className="author_list_info">
                                                         <a href="">Stacy Long</a>
                                                     </div>
-                                                </div> 
-                                            </div> 
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div className="spacer-10 mt-3"></div>
-                                        <div  className="btn-main btn-lg"  onClick={() => buyNft(query)}>
+                                        <div className="btn-main btn-lg" onClick={() => buyNft(query)}>
                                             Buy Now
                                         </div>
-                                        &nbsp; 
+                                        &nbsp;
                                     </div>
 
                                 </div>

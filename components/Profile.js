@@ -9,6 +9,8 @@ import { create as ipfsHttpClient } from "ipfs-http-client";
 import { db, auth, storage } from "../firebase/clientApp";
 
 import web3 from 'web3'
+
+import { Avatar, Fab } from '@material-ui/core';
 import { getFirestore, collection, addDoc, getDocs, Timestamp } from "firebase/firestore";
 import { getStorage, where, query, doc, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
@@ -16,13 +18,14 @@ const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
 function Profile() {
   const web3Context = React.useContext(Web3Context);
-  const { currentAddress, userProfiles, userData, getUserData, firebaseData,getUserFirebaseData } = web3Context;
+  const { currentAddress, userProfiles, userData, getUserData, firebaseData, getUserFirebaseData } = web3Context;
   const [fileUrl, setFileUrl] = useState(null)
-  const [formInput, updateFormInput] = useState({ name: 'Monica Lucas', bio: '', email: '' });
+  const [formInput, updateFormInput] = useState({ name: 'Monica Lucas', bio: '',Username: '@monicalucas'});
+
+  const [userProfileData, setUserProfileData] = useState({ bio: '', name: '', email: '', initial: '' })
 
   useEffect(() => {
-    // getUserFirebaseData();
-    // console.log(userData,"profile user data");
+    getUserFirebaseData(); 
   })
 
   const metadata = {
@@ -31,32 +34,33 @@ function Profile() {
 
 
   async function onChange(e) {
-    const file = e.target.files[0]
-    const imageRef = ref(storage, '/NFT-Hunt' + file.name);
-    uploadBytesResumable(imageRef, file, metadata)
-      .then((snapshot) => { 
-        // Let's get a download URL for the file.
-        getDownloadURL(snapshot.ref).then((url) => { 
-          setFileUrl(url)
-          // ...
-        });
-      }).catch((error) => {
-        console.error('Upload failed', error);
-        // ...
-      });
+    // const file = e.target.files[0]
+    // const imageRef = ref(storage, '/NFT-Hunt' + file.name);
+    // uploadBytesResumable(imageRef, file, metadata)
+    //   .then((snapshot) => { 
+    //     // Let's get a download URL for the file.
+    //     getDownloadURL(snapshot.ref).then((url) => { 
+    //       setFileUrl(url)
+    //       // ...
+    //     });
+    //   }).catch((error) => {
+    //     console.error('Upload failed', error);
+    //     // ...
+    //   });
   }
 
-  async function submitProfile() { 
+  async function submitProfile() {
     const { name, bio, email } = formInput
-    console.log(name,bio,email,fileUrl);
+    console.log(name, bio, email);
     if (currentAddress != "") {
       const docRef = await addDoc(collection(db, 'Nft-Marketplace'), {
         Bio: bio,
         Name: name,
-        Image: fileUrl,
+        Username: username,
+        Initials: name[0],
         WalletAddress: currentAddress,
         createdAt: Timestamp.fromDate(new Date()).toDate(),
-      }); 
+      });
     } else {
       alert("please connect wallet!!")
     }
@@ -113,21 +117,24 @@ function Profile() {
                 name="userProfile"
                 id="userProfile"
                 className="form-border"
-                 
+
               >
                 <div className="de-flex-col">
                   <div className="profile_avatar">
-                    <img
+                    <Fab size="small" color="secondary" className="ml-3 font-weight-bold">
+                      {userData != null ? userData.Initials : 'M'}
+                    </Fab>
+                    {/* <img
                       src={fileUrl !== null ? fileUrl : "/img/author_single/author_thumbnail.jpg"}
                       alt="image"
-                    />
-                    <i className="fa fa-check"></i>
+                    /> */}
+                    {/* <i className="fa fa-check"></i> */}
                     <div className="profile_name">
                       <h4>
                         {formInput.name}
                         <span className="profile_username"> {` ${formInput.name !== " " ? "@" + formInput.name.toLocaleLowerCase().split(' ').join('') : "@monica"}`}</span>
                         <span id="wallet" className="profile_wallet">
-                          {currentAddress}
+                          {userData != null ? userData.WalletAddress : currentAddress}
                         </span>
                         <button type="button" id="btn_copy" title="Copy Text">
                           Copy
@@ -138,7 +145,7 @@ function Profile() {
                 </div>
                 <br />
                 <div className="field-set">
-                  <h5>Upload Profile</h5>
+                  {/* <h5>Upload Profile</h5>
                   <div className="d-create-file">
                     <p id="file_name">PNG, JPG</p>
                     <label
@@ -152,16 +159,31 @@ function Profile() {
                     </label>
                     <input id="files" onChange={onChange} style={{ display: "none" }} type="file" />
 
-                  </div>
+                  </div> */}
                   <label>Display name</label>
                   <input
                     type="text"
                     name="dname"
                     id="dname"
                     className="form-control"
+                    defaultValue={userData != null ? userData.Name : ''}
                     placeholder="Enter your display name"
                     onChange={(e) =>
                       updateFormInput({ ...formInput, name: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="field-set">
+                  <label>User Name</label>
+                  <input
+                    type="text"
+                    name="username"
+                    id="username"
+                    className="form-control"
+                    defaultValue={userData != null ? userData.Username : ''}
+                    placeholder="Enter Your Username"
+                    onChange={(e) =>
+                      updateFormInput({ ...formInput, Username: e.target.value })
                     }
                   />
                 </div>
@@ -172,28 +194,30 @@ function Profile() {
                     name="bio"
                     id="bio"
                     className="form-control"
+                    defaultValue={userData != null ? userData.Bio : ''}
                     placeholder="Tell about yourself in few words"
                     onChange={(e) =>
                       updateFormInput({ ...formInput, bio: e.target.value })
                     }
                   />
                 </div>
-                <div className="field-set">
+                {/* <div className="field-set">
                   <label>Email</label>
                   <input
                     type="text"
                     name="email"
                     id="email"
+                    defaultValue={userData != null ? userData.Email : ' '}
                     className="form-control"
                     placeholder="Enter your email"
                     onChange={(e) =>
                       updateFormInput({ ...formInput, email: e.target.value })
                     }
                   />
-                </div>
+                </div> */}
                 <div id="submit">
                   <input
-                    type="button" 
+                    type="button"
                     defaultValue="Update Profile"
                     className="btn btn-main color-2"
                     onClick={submitProfile}

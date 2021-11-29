@@ -5,7 +5,7 @@ import Link from "next/link";
 
 function Explore() {
   const web3Context = React.useContext(Web3Context);
-  const { nfts, loadingState, loadNFTs, loader } = web3Context;
+  const { nfts, loadingState, loadNFTs, loader ,buyNft} = web3Context;
 
   useEffect(() => {
     loadNFTs();
@@ -49,7 +49,7 @@ function Explore() {
                         key={i}
                         className="col-lg-3 col-md-6 col-sm-6 col-xs-12"
                       >
-                        <Link
+                        {/* <Link
                           href={{
                             pathname: "details",
                             query: {
@@ -62,7 +62,7 @@ function Explore() {
                               owner:nft.owner
                             },
                           }}
-                        >
+                        > */}
                           <div className="nft__item">
                             <div className="author_list_pp">
                               <a href="author.html">
@@ -91,6 +91,7 @@ function Explore() {
                               </div>
                               <div
                                 className="nft__item_action"  
+                                onClick={() => buyNft(nft)}
                               >
                                 <a href="#">Buy Now</a>
                               </div>
@@ -100,7 +101,7 @@ function Explore() {
                               </div>
                             </div>
                           </div>
-                        </Link>
+                        {/* </Link> */}
                       </div>
                     );
                   })}
