@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Web3Context } from "../context/Web3Context";
 
 import { ethers } from "ethers";
 import { create as ipfsHttpClient } from "ipfs-http-client";
@@ -11,6 +12,9 @@ import { nftaddress, nftmarketaddress } from "../config";
 import NFT from "../artifacts/contracts/NFT.sol/NFT.json";
 import Market from "../artifacts/contracts/NFTMarket.sol/NFTMarket.json";
 import web3 from 'web3'
+import { Avatar, Fab } from '@material-ui/core';
+
+
 
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
@@ -19,6 +23,9 @@ function Create() {
   const [formInput, updateFormInput] = useState({ price: '', name: '', description: '' })
   const router = useRouter()
   const [loader, setLoader] = useState(false)
+
+  const web3Context = React.useContext(Web3Context);
+const { currentAddress, userData,userId } = web3Context;
 
   async function onChange(e) {
     const file = e.target.files[0]
@@ -205,7 +212,13 @@ function Create() {
               <div className="nft__item">
                 <div className="author_list_pp">
                   <a href="#">
-                    <img className="lazy" src="/img/author/author-1.jpg" alt />
+                    {/* {
+                      userData.Initials ?   <Fab size="large" color="primary" className="ml-3 font-weight-bold">
+                      { userData.Initials}
+                    </Fab> :  <img className="lazy" src="/img/author/author-1.jpg" alt />
+                    }
+                    */}
+                   <img className="lazy" src="/img/author/author-1.jpg" alt />
                     <i className="fa fa-check" />
                   </a>
                 </div>

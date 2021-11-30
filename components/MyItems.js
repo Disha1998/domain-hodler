@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Web3Context } from "../context/Web3Context";
+import { Avatar, Fab } from '@material-ui/core';
 
 function MyItems() {
   const web3Context = React.useContext(Web3Context);
@@ -55,14 +56,16 @@ function MyItems() {
                      </div>
                    </div> : */}
                   <div className="profile_avatar">
-                    <img src="/img/author/author-1.jpg" alt />
-                    <i className="fa fa-check" />
+                  <Fab size="large" color="primary" className="ml-3 font-weight-bold">
+                      {userData.Initials != undefined ? userData.Initials : "u"}
+                    </Fab>
+                    {/* <img src="/img/author/author-1.jpg" alt /> */}
+                    {/* <i className="fa fa-check" /> */}
                     <div className="profile_name">
-                      <h4>
-                        User
-                        <span className="profile_username">@user </span>
+                      <h4>  {userData.Name != undefined ? userData.Name : "User"}
+                        <span className="profile_username">  {`${userData.Username != undefined ? "@" + userData.Username : "@username"}`}</span>
                         <span id="wallet" className="profile_wallet">
-                          {currentAddress ? currentAddress : "0x71a06125a260d33aa2F0F61ceac539a84E64c675"}
+                          {userData.WalletAddress != undefined ? userData.WalletAddress : currentAddress}
                         </span>
                         <button type="button" id="btn_copy" title="Copy Text">
                           Copy

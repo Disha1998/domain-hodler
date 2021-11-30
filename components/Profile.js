@@ -1,9 +1,4 @@
 import React, { useEffect, useState } from "react";
-
-import {
-  faCheck
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Web3Context } from "../context/Web3Context";
 import { create as ipfsHttpClient } from "ipfs-http-client";
 import { db, auth, storage } from "../firebase/clientApp";
@@ -11,26 +6,33 @@ import { db, auth, storage } from "../firebase/clientApp";
 import web3 from 'web3'
 
 import { Avatar, Fab } from '@material-ui/core';
-import { getFirestore, collection, addDoc, getDocs, Timestamp } from "firebase/firestore";
-import { getStorage, where, query, doc, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { getFirestore, collection, addDoc, getDocs, Timestamp, updateDoc, doc, where, query, } from "firebase/firestore";
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
 
 function Profile() {
   const web3Context = React.useContext(Web3Context);
-  const { currentAddress, userProfiles, userData, getUserData, firebaseData, getUserFirebaseData } = web3Context;
+  const { currentAddress, userProfiles, userData, getUserData, firebaseData, userId } = web3Context;
   const [fileUrl, setFileUrl] = useState(null)
-  const [formInput, updateFormInput] = useState({ name: 'Monica Lucas', bio: '',Username: '@monicalucas'});
+  const [formInput, updateFormInput] = useState({ name: 'User', bio: '', username: 'username', initial: 'U' });
 
-  const [userProfileData, setUserProfileData] = useState({ bio: '', name: '', email: '', initial: '' })
+
 
   useEffect(() => {
-    getUserFirebaseData(); 
-  })
+    console.log(userData, userId, "initial I am called");
+    if (userData.Name != undefined && userData.WalletAddress == currentAddress) {
+      updateFormInput({ name: userData.Name, bio: userData.Bio, username: userData.Username, initial: userData.Initials })
+    } else  {
+      updateFormInput({ name: 'User', bio: '', username: 'username', initial: 'u' });
+    }  
+  }, [userData])
 
   const metadata = {
     contentType: 'image/jpeg',
   };
+
+
+
 
 
   async function onChange(e) {
@@ -50,9 +52,10 @@ function Profile() {
   }
 
   async function submitProfile() {
-    const { name, bio, email } = formInput
-    console.log(name, bio, email);
-    if (currentAddress != "") {
+    const { name, bio, username } = formInput
+    console.log(name, bio, username);
+    if (currentAddress == "") return alert("please connect wallet!!");
+    if (currentAddress != "" && userData.WalletAddress !== currentAddress) {
       const docRef = await addDoc(collection(db, 'Nft-Marketplace'), {
         Bio: bio,
         Name: name,
@@ -60,22 +63,26 @@ function Profile() {
         Initials: name[0],
         WalletAddress: currentAddress,
         createdAt: Timestamp.fromDate(new Date()).toDate(),
+        updatedAt: '',
       });
+      formInput.name = '';
+      formInput.bio = '';
+      formInput.username = '';
+    } else if (currentAddress != "" && userData.WalletAddress === currentAddress) {
+      const updateData = doc(db, "Nft-Marketplace", userId);
+      await updateDoc(updateData, {
+        Bio: bio,
+        Name: name,
+        Username: username,
+        Initials: name[0],
+        WalletAddress: currentAddress,
+        updatedAt: Timestamp.fromDate(new Date()).toDate(),
+      });
+      formInput.name = '';
+      formInput.bio = '';
+      formInput.username = '';
     } else {
-      alert("please connect wallet!!")
-    }
-
-
-    try {
-      // const added = await client.add(data) 
-      // var buffer = Buffer.from(added.path);
-      // var ipfsHash = buffer.toString('utf8'); 
-      // const url = `https://ipfs.infura.io/ipfs/${added.path}`
-      /* after file is uploaded to IPFS, pass the URL to save it on Polygon */
-      // console.log(url,"url from user");
-      // userProfiles(name,bio,fileUrl,email); 
-    } catch (error) {
-      console.log('Error uploading file: ', error)
+      alert("something went wrong!!!")
     }
   }
 
@@ -121,8 +128,8 @@ function Profile() {
               >
                 <div className="de-flex-col">
                   <div className="profile_avatar">
-                    <Fab size="small" color="secondary" className="ml-3 font-weight-bold">
-                      {userData != null ? userData.Initials : 'M'}
+                    <Fab size="large" color="primary" className="ml-3 font-weight-bold">
+                      {formInput.initial}
                     </Fab>
                     {/* <img
                       src={fileUrl !== null ? fileUrl : "/img/author_single/author_thumbnail.jpg"}
@@ -132,9 +139,10 @@ function Profile() {
                     <div className="profile_name">
                       <h4>
                         {formInput.name}
-                        <span className="profile_username"> {` ${formInput.name !== " " ? "@" + formInput.name.toLocaleLowerCase().split(' ').join('') : "@monica"}`}</span>
+                        <span className="profile_username"> {`${"@" + formInput.username}`}</span>
+                        {/* <span className="profile_username"> {` ${formInput.username.length !== 0 ? "@" + formInput.username.toLocaleLowerCase().split(' ').join('') : "username"}`}</span> */}
                         <span id="wallet" className="profile_wallet">
-                          {userData != null ? userData.WalletAddress : currentAddress}
+                          {currentAddress}
                         </span>
                         <button type="button" id="btn_copy" title="Copy Text">
                           Copy
@@ -163,13 +171,16 @@ function Profile() {
                   <label>Display name</label>
                   <input
                     type="text"
-                    name="dname"
+                    name="name"
                     id="dname"
+                    defaultValue={formInput.name}
+                    value={formInput.name}
                     className="form-control"
-                    defaultValue={userData != null ? userData.Name : ''}
                     placeholder="Enter your display name"
-                    onChange={(e) =>
-                      updateFormInput({ ...formInput, name: e.target.value })
+                    onChange={(e) => {
+                      const init = e.target.value.trim();
+                      updateFormInput({ ...formInput, name: e.target.value, initial: init[0] });
+                    }
                     }
                   />
                 </div>
@@ -179,11 +190,11 @@ function Profile() {
                     type="text"
                     name="username"
                     id="username"
+                    value={formInput.username}
                     className="form-control"
-                    defaultValue={userData != null ? userData.Username : ''}
                     placeholder="Enter Your Username"
                     onChange={(e) =>
-                      updateFormInput({ ...formInput, Username: e.target.value })
+                      updateFormInput({ ...formInput, username: e.target.value })
                     }
                   />
                 </div>
@@ -193,8 +204,8 @@ function Profile() {
                     type="text"
                     name="bio"
                     id="bio"
+                    value={formInput.bio}
                     className="form-control"
-                    defaultValue={userData != null ? userData.Bio : ''}
                     placeholder="Tell about yourself in few words"
                     onChange={(e) =>
                       updateFormInput({ ...formInput, bio: e.target.value })
@@ -218,7 +229,7 @@ function Profile() {
                 <div id="submit">
                   <input
                     type="button"
-                    defaultValue="Update Profile"
+                    defaultValue={userData.WalletAddress == currentAddress ? "Update Profile" :"Create Profile"}
                     className="btn btn-main color-2"
                     onClick={submitProfile}
                   />

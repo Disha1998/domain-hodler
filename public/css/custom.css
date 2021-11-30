@@ -17,3 +17,20 @@
 .bg-myitems{
     background: url(/img/author_single/author_banner.jpg) center top / cover;
 }
+
+button.MuiButtonBase-root.MuiFab-root.ml-3.font-weight-bold.MuiFab-primary{
+        width: 100px;
+        height: 100px;
+        font-size: 36px;
+        font-weight: bold;
+}
+
+
+@media  only screen and (max-width:600px){
+    button.MuiButtonBase-root.MuiFab-root.ml-3.font-weight-bold.MuiFab-primary{
+        width: 70px;
+        height: 70px;
+        font-size: 24px;
+        font-weight: bold;
+}
+}

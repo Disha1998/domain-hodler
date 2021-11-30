@@ -108,7 +108,7 @@ function Header() {
                     <span
                       id="wallet"
                       className="profile_wallet"
-                      style={{ color: "#eee" }}
+                      style={{ color: "#000" }}
                     >
                       {currentAddress ? (
                         currentAddress

@@ -37,11 +37,13 @@ export const Web3ContextProvider = (props) => {
   const [userData, setUserData] = useState([]);
   const [firebaseData, setfirebaseData] = useState([]);
   const [loader, setLoader] = useState(false);
+  const [userId, setUserId] = useState('');
+  const [userAllData, setuserAllData] = useState([]);
 
   useEffect(() => {
     let web3 = new Web3();
     firebase();
-    // getUserFirebaseData();
+
     // window.ethereum.enable().then(function (accounts) {
     //   setCurrentAddress(web3.utils.toChecksumAddress(accounts[0]));
     //   firebase();
@@ -53,24 +55,44 @@ export const Web3ContextProvider = (props) => {
         setCurrentAddress("");
         localStorage.setItem("account", null);
       }
-
-      loadMyNfts();
-      getUserFirebaseData();
-      // getUserFirebaseData(db);
+      loadMyNfts(); 
     });
-  });
+    getAllUserFirebaseData();
+    getUserFirebaseData(currentAddress);
+  }, [currentAddress]);
 
-  async function getUserFirebaseData() { 
+
+  async function getAllUserFirebaseData() { 
     const userData = collection(db, "Nft-Marketplace");
     const userSnapshot = await getDocs(userData);
     const userList = userSnapshot.docs.map((doc) => doc.data()); 
-    userList.forEach((e) => {
-      if (e.WalletAddress == currentAddress) {
-        setUserData(e);
-      } else {
-        console.log("No data found");
-      }
+    setuserAllData(userList);
+    // userList.forEach((e) => {
+    //   setuserAllData(e);
+    // });
+  }
+
+  async function getUserFirebaseData(address) {
+    console.log("get user call", address);  
+    const q = query(collection(db, "Nft-Marketplace"), where("WalletAddress", "==", address));
+    
+    const querySnapshot = await getDocs(q); 
+    querySnapshot.forEach((doc) => {
+      console.log("set docs");
+      setUserData(doc.data());
+      setUserId(doc.id);
     });
+
+    // const userList = userSnapshot.docs.map((doc) => doc.data());
+    // console.log(userList, "userlist");
+    // userList.forEach((e) => {
+    //   if (e.WalletAddress === address) {
+    //     console.log("match user", e.WalletAddress);
+    //     setUserData(e);
+    //   } else {
+    //     console.log("No data found");
+    //   }
+    // });
   }
 
   async function connectWallet() {
@@ -78,12 +100,9 @@ export const Web3ContextProvider = (props) => {
       web3 = new Web3(window.ethereum);
       try {
         window.ethereum.enable().then(function (accounts) {
-          setCurrentAddress(accounts[0]);
-          localStorage.setItem("account", accounts[0]);
-
+          setCurrentAddress(accounts[0]);  
           window.ethereum.on("accountsChanged", function (accounts) {
-            setCurrentAddress(accounts[0]);
-            localStorage.setItem("account", accounts[0]);
+            setCurrentAddress(accounts[0]); 
           });
         });
       } catch (e) {
@@ -236,6 +255,8 @@ export const Web3ContextProvider = (props) => {
       value={{
         loadNFTs,
         buyNft,
+        userId,
+        userAllData,
         nfts,
         loader,
         loadingState,
