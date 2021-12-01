@@ -24,11 +24,13 @@ import {
   getDocs,
   Timestamp,
 } from "firebase/firestore";
+import { useRouter } from 'next/router';
 
 import { db, auth, storage } from "../firebase/clientApp";
 export const Web3Context = createContext(undefined);
 
 export const Web3ContextProvider = (props) => {
+  const router = useRouter();
   const [nfts, setNfts] = useState([]);
   const [myNfts, setMyNfts] = useState([]);
   const [loadingState, setLoadingState] = useState(false);
@@ -39,6 +41,7 @@ export const Web3ContextProvider = (props) => {
   const [loader, setLoader] = useState(false);
   const [userId, setUserId] = useState('');
   const [userAllData, setuserAllData] = useState([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     let web3 = new Web3();
@@ -52,14 +55,21 @@ export const Web3ContextProvider = (props) => {
     window.ethereum.on("accountsChanged", function (accounts) {
       if (accounts.length > 0) setCurrentAddress(accounts[0]);
       else {
-        setCurrentAddress("");
+        setCurrentAddress(""); 
         localStorage.setItem("account", null);
       }
+      setIsRefreshing(false); 
       loadMyNfts(); 
     });
     getAllUserFirebaseData();
     getUserFirebaseData(currentAddress);
+    refreshData();
   }, [currentAddress]);
+
+  const refreshData = () => {
+    router.replace(router.asPath);
+    setIsRefreshing(true);
+  };
 
 
   async function getAllUserFirebaseData() { 

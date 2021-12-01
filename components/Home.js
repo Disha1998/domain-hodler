@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect} from "react";
 
 import {
   faWallet,
@@ -21,6 +21,11 @@ function HomeComponent() {
     slidesToShow: 4,
     slidesToScroll: 1
   };
+
+  useEffect(()=>{
+
+   console.log(userAllData);
+  },[userAllData])
 
   return (
     <div className="no-bottom no-top" id="content">
@@ -467,7 +472,7 @@ function HomeComponent() {
                   userAllData ? userAllData.map((e) => {
                     return <li>
                       <div key={e.WalletAddress} className="author_list_pp">
-                        <a href="">
+                        {/* <a href=""> */}
                           <Fab size="small" color="secondary" className="ml-3 font-weight-bold">
                             {e.Initials}
                           </Fab>
@@ -477,10 +482,10 @@ function HomeComponent() {
                             alt="image"
                           />
                           <i className="fa fa-check" /> */}
-                        </a>
+                        {/* </a> */}
                       </div>
                       <div className="author_list_info">
-                        <a href="">{e.Name}</a>
+                        <a href="#">{e.Name}</a>
                         <span>3.2 ETH</span>
                       </div>
                     </li>

@@ -4,31 +4,39 @@ import { create as ipfsHttpClient } from "ipfs-http-client";
 import { db, auth, storage } from "../firebase/clientApp";
 
 import web3 from 'web3'
-
+import { useRouter } from 'next/router';
 import { Avatar, Fab } from '@material-ui/core';
 import { getFirestore, collection, addDoc, getDocs, Timestamp, updateDoc, doc, where, query, } from "firebase/firestore";
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
 
 function Profile() {
+  const router = useRouter();
   const web3Context = React.useContext(Web3Context);
   const { currentAddress, userProfiles, userData, getUserData, firebaseData, userId } = web3Context;
   const [fileUrl, setFileUrl] = useState(null)
   const [formInput, updateFormInput] = useState({ name: 'User', bio: '', username: 'username', initial: 'U' });
-
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
 
   useEffect(() => {
     console.log(userData, userId, "initial I am called");
-    if (userData.Name != undefined && userData.WalletAddress == currentAddress) {
+    if (userData.Name != undefined && userData.WalletAddress == currentAddress) { 
       updateFormInput({ name: userData.Name, bio: userData.Bio, username: userData.Username, initial: userData.Initials })
-    } else  {
+      refreshData();
+    } else  { 
       updateFormInput({ name: 'User', bio: '', username: 'username', initial: 'u' });
-    }  
-  }, [userData])
+    } 
+    setIsRefreshing(false); 
+  }, [userData,currentAddress])
 
   const metadata = {
     contentType: 'image/jpeg',
+  };
+
+  const refreshData = () => {
+    router.replace(router.asPath);
+    setIsRefreshing(true);
   };
 
 
@@ -65,9 +73,7 @@ function Profile() {
         createdAt: Timestamp.fromDate(new Date()).toDate(),
         updatedAt: '',
       });
-      formInput.name = '';
-      formInput.bio = '';
-      formInput.username = '';
+      // updateFormInput({ ...formInput, bio:'',name:'',username:''})
     } else if (currentAddress != "" && userData.WalletAddress === currentAddress) {
       const updateData = doc(db, "Nft-Marketplace", userId);
       await updateDoc(updateData, {
@@ -78,9 +84,7 @@ function Profile() {
         WalletAddress: currentAddress,
         updatedAt: Timestamp.fromDate(new Date()).toDate(),
       });
-      formInput.name = '';
-      formInput.bio = '';
-      formInput.username = '';
+      // updateFormInput({ ...formInput, bio:'',name:'',username:''});
     } else {
       alert("something went wrong!!!")
     }
@@ -172,8 +176,7 @@ function Profile() {
                   <input
                     type="text"
                     name="name"
-                    id="dname"
-                    defaultValue={formInput.name}
+                    id="dname" 
                     value={formInput.name}
                     className="form-control"
                     placeholder="Enter your display name"

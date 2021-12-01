@@ -2,16 +2,33 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Web3Context } from "../context/Web3Context";
 import { Avatar, Fab } from '@material-ui/core';
+import { useRouter } from 'next/router';
 
 function MyItems() {
+  const router = useRouter();
   const web3Context = React.useContext(Web3Context);
   const { myNfts, myNftLoadingState, loadMyNfts, currentAddress, userData, getUserData } = web3Context;
   const [nfts, setNfts] = useState([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
+    refreshData();
     loadMyNfts();
-    // getUserData();
-  }, [currentAddress,]);
+     if (userData.Name != undefined && userData.WalletAddress == currentAddress) {  
+      refreshData();
+    }
+    setIsRefreshing(false); 
+  }, [userData,currentAddress]);
+
+
+  const refreshData = () => {
+    router.replace(router.asPath);
+    setIsRefreshing(true);
+  };
+
+
+
+
   return (
     <div className="no-bottom no-top" id="content">
       <div id="top" />
@@ -56,7 +73,7 @@ function MyItems() {
                      </div>
                    </div> : */}
                   <div className="profile_avatar">
-                  <Fab size="large" color="primary" className="ml-3 font-weight-bold">
+                    <Fab size="large" color="primary" className="ml-3 font-weight-bold">
                       {userData.Initials != undefined ? userData.Initials : "u"}
                     </Fab>
                     {/* <img src="/img/author/author-1.jpg" alt /> */}
@@ -64,12 +81,17 @@ function MyItems() {
                     <div className="profile_name">
                       <h4>  {userData.Name != undefined ? userData.Name : "User"}
                         <span className="profile_username">  {`${userData.Username != undefined ? "@" + userData.Username : "@username"}`}</span>
-                        <span id="wallet" className="profile_wallet">
-                          {userData.WalletAddress != undefined ? userData.WalletAddress : currentAddress}
-                        </span>
-                        <button type="button" id="btn_copy" title="Copy Text">
-                          Copy
-                        </button>
+                        {
+                          userData.WalletAddress != undefined ? <>
+                            <span id="wallet" className="profile_wallet">
+                              {userData.WalletAddress ? userData.WalletAddress : currentAddress}
+                            </span>
+                            <button type="button" id="btn_copy" title="Copy Text">
+                              Copy
+                            </button>
+                          </> : ''
+                        }
+
                       </h4>
                     </div>
                   </div>
