@@ -1,4 +1,4 @@
-import React,{useEffect} from "react";
+import React, { useEffect } from "react";
 
 import {
   faWallet,
@@ -22,10 +22,9 @@ function HomeComponent() {
     slidesToScroll: 1
   };
 
-  useEffect(()=>{
-
-   console.log(userAllData);
-  },[userAllData])
+  useEffect(() => {
+    
+  }, [])
 
   return (
     <div className="no-bottom no-top" id="content">
@@ -473,10 +472,10 @@ function HomeComponent() {
                     return <li>
                       <div key={e.WalletAddress} className="author_list_pp">
                         {/* <a href=""> */}
-                          <Fab size="small" color="secondary" className="ml-3 font-weight-bold">
-                            {e.Initials}
-                          </Fab>
-                          {/* <img
+                        <Fab size="small" color="secondary" className="ml-3 font-weight-bold">
+                          {e.Initials}
+                        </Fab>
+                        {/* <img
                             className="lazy"
                             src="/img/author/author-1.jpg"
                             alt="image"
@@ -490,7 +489,7 @@ function HomeComponent() {
                       </div>
                     </li>
                   }) : ""
-                } 
+                }
               </ol>
             </div>
           </div>

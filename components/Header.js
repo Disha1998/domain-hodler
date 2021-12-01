@@ -68,7 +68,7 @@ function Header() {
                   className={` ${isSticky ? "" : "header-dark-text"}`}
                 >
                   <li>
-                    <Link href="/">Home</Link>
+                    <a href="/">Home</a>
                   </li>
                   <li>
                     <Link href="explore">Explore</Link>
