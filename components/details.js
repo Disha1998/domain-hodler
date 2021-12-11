@@ -5,8 +5,16 @@ import { Avatar, Fab } from "@material-ui/core";
 
 function NftDetails({ router: { query } }) {
   const web3Context = React.useContext(Web3Context);
-  const { buyNft, loader, userData } = web3Context;
-  console.log(query, "query");
+  const { buyNft, loader, getCreatorData, creator } = web3Context;
+
+  useEffect(() => {
+    if (query.seller !== undefined) {
+      getCreatorData(query.seller);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
+
+
   return (
     <>
       <div className="no-bottom no-top" id="content">
@@ -61,16 +69,14 @@ function NftDetails({ router: { query } }) {
                               color="secondary"
                               className="ml-3 font-weight-bold"
                             >
-                              {userData.Initials != undefined
-                                ? userData.Initials
-                                : "u"}
+                              {creator != undefined ? creator.Initials : "u"}
                             </Fab>
                             {/* <img alt="nft-img" className="lazy" src="/img/author/author-1.jpg" alt="" /> */}
                             <i className="fa fa-check"></i>
                           </a>
                         </div>
                         <div className="author_list_info">
-                          {userData.Name != undefined ? userData.Name : "User"}
+                          {creator != undefined ? creator.Name : "User"}
                         </div>
                       </div>
                     </div>
@@ -91,7 +97,9 @@ function NftDetails({ router: { query } }) {
                         className="btn-main btn-lg"
                         onClick={() => buyNft(query)}
                       >
-                        Buy Now
+                        {loader == true
+                          ? "Loading...! Please wait it will take time"
+                          : "Buy Now"}
                       </div>
                     ) : (
                       ""

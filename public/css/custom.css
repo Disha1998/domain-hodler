@@ -45,3 +45,10 @@ button.MuiButtonBase-root.MuiFab-root.ml-3.font-weight-bold.MuiFab-primary{
         font-weight: bold;
 }
 }
+
+
+.row.wow.fadeIn.animated.animated{
+    max-width: 1320px;
+    margin-left: auto;
+    margin-right: auto;
+}

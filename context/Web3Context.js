@@ -42,13 +42,11 @@ export const Web3ContextProvider = (props) => {
   const [userId, setUserId] = useState("");
   const [userAllData, setuserAllData] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
-
-
+  const [creator, setCreator] = useState("");
 
   useEffect(() => {
     let web3 = new Web3();
     firebase();
-
 
     window.onunload = () => {
       // Clear the local storage
@@ -116,6 +114,25 @@ export const Web3ContextProvider = (props) => {
     //     console.log("No data found");
     //   }
     // });
+  }
+
+  async function getCreatorData(address) {
+    console.log(address);
+    try {
+      const q = query(
+        collection(db, "Nft-Marketplace"),
+        where("WalletAddress", "==", address)
+      );
+      const querySnapshot = await getDocs(q);
+      console.log(querySnapshot,"creater data");
+      querySnapshot.forEach((doc) => {
+        
+        setCreator(doc.data());
+        console.log(doc.data())
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async function connectWallet() {
@@ -200,10 +217,13 @@ export const Web3ContextProvider = (props) => {
           seller: i.seller,
           owner: i.owner,
           image: meta.data.image,
+          category: meta.data.category,
+          nftType: meta.data.nftType,
         };
         return item;
       })
     );
+    console.log(items, "its me");
     setNfts(items);
     setLoadingState(true);
   }
@@ -269,6 +289,7 @@ export const Web3ContextProvider = (props) => {
       loadNFTs();
       loadMyNfts();
       setLoader(false);
+      window.location.href("/my-items");
     } catch (error) {
       console.log("err", error);
     }
@@ -291,9 +312,11 @@ export const Web3ContextProvider = (props) => {
         // userProfiles,
         userData,
         getUserFirebaseData,
+        getCreatorData,
         // getUserData,
         connectWallet,
         firebaseData,
+        creator,
       }}
       {...props}
     >

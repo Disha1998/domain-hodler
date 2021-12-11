@@ -5,11 +5,24 @@ import Link from "next/link";
 
 function Explore() {
   const web3Context = React.useContext(Web3Context);
-  const { nfts, loadingState, loadNFTs, loader ,buyNft} = web3Context;
+  const { nfts, loadingState, loadNFTs, loader, buyNft } = web3Context;
+
+  const [selectedValues, updateSelectedValues] = React.useState({
+    category: "",
+    nftType: "",
+  });
+  const [nftsData, setNfts] = React.useState(nfts);
 
   useEffect(() => {
     loadNFTs();
   }, []);
+
+  useEffect(() => {
+    setNfts(nfts);
+  }, [nfts]);
+
+  console.log(nftsData);
+  console.log(selectedValues.category);
 
   return (
     <div className="no-bottom no-top" id="content">
@@ -29,21 +42,108 @@ function Explore() {
       </section>
       {}
       {}
+      <div className="row wow fadeIn">
+        <div className="col-lg-3 col-sm-12 items_filter">
+          <div className="form-group">
+            <select
+              className="form-control"
+              id="exampleFormControlSelect1"
+              onChange={(e) => {
+                updateSelectedValues({
+                  ...selectedValues,
+                  category: e.target.value,
+                });
+                let data;
+                if (selectedValues.nftType !== "" && e.target.value !== "") {
+                  data = nfts.filter(
+                    (nft) =>
+                      nft.category === e.target.value &&
+                      nft.nftType === selectedValues.nftType
+                  );
+                } else if (
+                  e.target.value === "" &&
+                  selectedValues.nftType === ""
+                ) {
+                  data = nfts;
+                } else if (e.target.value === "") {
+                  data = nfts.filter(
+                    (nft) => nft.nftType === selectedValues.nftType
+                  );
+                } else {
+                  data = nfts.filter((nft) => nft.category === e.target.value);
+                }
+
+                setNfts(data);
+                console.log(data);
+              }}
+            >
+              <option selected value="">
+                Category
+              </option>
+              <option value="Christmas Gift">Christmas Gift</option>
+              <option value="New Year Gift">New Year Gift</option>
+              <option value="Valentines Gift">Valentines Gift</option>
+              <option value="Birthday Gift">Birthday Gift</option>
+              <option value="Annivarsary Gift">Annivarsary Gift</option>
+            </select>
+          </div>
+        </div>
+        <div className="col-lg-3 col-sm-12 items_filter">
+          <div className="form-group ">
+            <select
+              className="form-control "
+              id="exampleFormControlSelect1"
+              onChange={(e) => {
+                updateSelectedValues({
+                  ...selectedValues,
+                  nftType: e.target.value,
+                });
+                let data;
+                if (selectedValues.category !== "" && e.target.value !== "") {
+                  data = nfts.filter(
+                    (nft) =>
+                      nft.category === selectedValues.category &&
+                      nft.nftType === e.target.value
+                  );
+                } else if (
+                  e.target.value === "" &&
+                  selectedValues.category === ""
+                ) {
+                  data = nfts;
+                } else if (e.target.value === "") {
+                  data = nfts.filter(
+                    (nft) => nft.category === selectedValues.category
+                  );
+                } else {
+                  data = nfts.filter((nft) => nft.nftType === e.target.value);
+                }
+
+                setNfts(data);
+                console.log(data);
+              }}
+            >
+              <option selected value="">
+                Nft Type
+              </option>
+              <option value="Poetry">Poetry</option>
+              <option value="Music">Music</option>
+              <option value="Art">Art</option>
+              <option value="Event Ticket">Event Ticket</option>
+              <option value="Virtualand">Virtualand</option>
+            </select>
+          </div>
+        </div>
+        <div className="col-lg-3"></div>
+      </div>
       <section aria-label="section">
         <div className="container">
-          {loader == true ? (
-            <h3 style={{ color: "blueviolet", fontWeight: "#403f83" }}>
-              <i className="fa fa-spinner fa-pulse fa-fw"></i> Loading...!
-              Buy-item Please wait!!!
-            </h3>
-          ) : (
+          {
             <div className="row wow fadeIn">
-              {loadingState === true && !nfts.length ? (
+              {loadingState === true && !nftsData.length ? (
                 <h1>No items in marketplace</h1>
               ) : (
                 <>
-                  {nfts.map((nft, i) => {
-                    
+                  {nftsData.map((nft, i) => {
                     return (
                       <div
                         key={i}
@@ -59,8 +159,8 @@ function Explore() {
                               tokenId: nft.tokenId,
                               name: nft.name,
                               price: nft.price,
-                              owner:nft.owner,
-                              page:'explore'
+                              owner: nft.owner,
+                              page: "explore",
                             },
                           }}
                         >
@@ -90,9 +190,7 @@ function Explore() {
                               <div className="nft__item_price">
                                 {nft.price} MATIC<span>1/20</span>
                               </div>
-                              <div
-                                className="nft__item_action"  
-                              >
+                              <div className="nft__item_action">
                                 <a href="#">Buy Now</a>
                               </div>
                               <div className="nft__item_like">
@@ -117,8 +215,10 @@ function Explore() {
                   Load more
                 </a>
               </div>
+              
             </div>
-          )}
+            
+          }
         </div>
       </section>
     </div>
