@@ -118,262 +118,255 @@ export const Web3ContextProvider = (props) => {
   }
 
   async function getCreatorData(address) {
-    console.log(address);
-    try {
-      const q = query(
-        collection(db, "Nft-Marketplace"),
-        where("WalletAddress", "==", address)
-      );
-      const querySnapshot = await getDocs(q);
-      console.log(querySnapshot,"creater data");
-      querySnapshot.forEach((doc) => {
-        
-        setCreator(doc.data());
-        console.log(doc.data())
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
+    console.log("get user call", address);
+    const q = query(collection(db, "Nft-Marketplace"), where("WalletAddress", "==", address));
 
-  async function connectWallet() {
-    if (window.ethereum) {
-      web3 = new Web3(window.ethereum);
-      try {
-        window.ethereum.enable().then(function (accounts) {
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => { 
+      setCreator(doc.data());
+      console.log(doc.data())
+    });
+   
+}
+
+async function connectWallet() {
+  if (window.ethereum) {
+    web3 = new Web3(window.ethereum);
+    try {
+      window.ethereum.enable().then(function (accounts) {
+        setCurrentAddress(accounts[0]);
+        localStorage.setItem("account", accounts[0]);
+        window.ethereum.on("accountsChanged", function (accounts) {
           setCurrentAddress(accounts[0]);
           localStorage.setItem("account", accounts[0]);
-          window.ethereum.on("accountsChanged", function (accounts) {
-            setCurrentAddress(accounts[0]);
-            localStorage.setItem("account", accounts[0]);
-          });
         });
-      } catch (e) {
-        alert("User rejected the MetaMask connection request !");
-        localStorage.setItem("account", null);
-      }
-    } else if (window.web3) {
-      web3 = new Web3(window.web3.currentProvider);
-    } else {
-      alert("You have to install MetaMask !");
+      });
+    } catch (e) {
+      alert("User rejected the MetaMask connection request !");
+      localStorage.setItem("account", null);
     }
+  } else if (window.web3) {
+    web3 = new Web3(window.web3.currentProvider);
+  } else {
+    alert("You have to install MetaMask !");
   }
+}
 
-  async function firebase() {
-    // const firebaseConfig = {
-    //   apiKey: "AIzaSyB_DOoIFW1oYAv48p_2rMYn6jl3qEVj_xU",
-    //   authDomain: "nft-hunt-a1b0c.firebaseapp.com",
-    //   projectId: "nft-hunt-a1b0c",
-    //   storageBucket: "nft-hunt-a1b0c.appspot.com",
-    //   messagingSenderId: "871660143302",
-    //   appId: "1:871660143302:web:6f49227bc7801fbaab8dc7",
-    //   measurementId: "G-B99MRR6XBV"
-    // };
-    // // Initialize Firebase
-    // const app = initializeApp(firebaseConfig);
-    // const analytics = getAnalytics(app);
-    // setfirebaseData(app);
-    // console.log(app, "firebase");
-  }
-  // async function userProfiles(name, bio, email, fileUrl) {
-  //   let web3 = new Web3();
-  //   const provider = new ethers.providers.Web3Provider(window.ethereum);
-  //   const signer = provider.getSigner()
-  //   const userContract = new ethers.Contract(useraddresss, User.abi, signer);
-  //   console.log(userContract, "u");
-  //   const data = await userContract.createUser(currentAddress, name, bio, email, fileUrl);
+async function firebase() {
+  // const firebaseConfig = {
+  //   apiKey: "AIzaSyB_DOoIFW1oYAv48p_2rMYn6jl3qEVj_xU",
+  //   authDomain: "nft-hunt-a1b0c.firebaseapp.com",
+  //   projectId: "nft-hunt-a1b0c",
+  //   storageBucket: "nft-hunt-a1b0c.appspot.com",
+  //   messagingSenderId: "871660143302",
+  //   appId: "1:871660143302:web:6f49227bc7801fbaab8dc7",
+  //   measurementId: "G-B99MRR6XBV"
+  // };
+  // // Initialize Firebase
+  // const app = initializeApp(firebaseConfig);
+  // const analytics = getAnalytics(app);
+  // setfirebaseData(app);
+  // console.log(app, "firebase");
+}
+// async function userProfiles(name, bio, email, fileUrl) {
+//   let web3 = new Web3();
+//   const provider = new ethers.providers.Web3Provider(window.ethereum);
+//   const signer = provider.getSigner()
+//   const userContract = new ethers.Contract(useraddresss, User.abi, signer);
+//   console.log(userContract, "u");
+//   const data = await userContract.createUser(currentAddress, name, bio, email, fileUrl);
 
-  // }
+// }
 
-  async function getUserData() {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const userContract = new ethers.Contract(useraddresss, User.abi, signer);
-    const data = await userContract.getUser(currentAddress);
-    setUserData(data);
-  }
+async function getUserData() {
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
+  const userContract = new ethers.Contract(useraddresss, User.abi, signer);
+  const data = await userContract.getUser(currentAddress);
+  setUserData(data);
+}
 
-  async function loadNFTs() {
-    setLoadingState(false);
-    let web3 = new Web3();
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider);
-    const marketContract = new ethers.Contract(
-      nftmarketaddress,
-      Market.abi,
-      provider
-    );
-    const data = await marketContract.fetchMarketItems();
-    const items = await Promise.all(
-      data.map(async (i) => {
-        const tokenUri = await tokenContract.tokenURI(i.tokenId);
-        const meta = await axios.get(tokenUri);
-        let price = web3.utils.fromWei(i.price.toString(), "ether");
-
-        let item = {
-          price,
-          tokenId: i.tokenId.toNumber(),
-          name: meta.data.name,
-          description: meta.data.description,
-          seller: i.seller,
-          owner: i.owner,
-          image: meta.data.image,
-          category: meta.data.category,
-          nftType: meta.data.nftType,
-        };
-        return item;
-      })
-    );
-    console.log(items, "its me");
-    setNfts(items);
-    setLoadingState(true);
-  }
-
-  async function loadMyNfts() {
-    let web3 = new Web3();
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-
-    const marketContract = new ethers.Contract(
-      nftmarketaddress,
-      Market.abi,
-      signer
-    );
-    const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider);
-    const data = await marketContract.fetchMyNFTs();
-
-    const items = await Promise.all(
-      data.map(async (i) => {
-        const tokenUri = await tokenContract.tokenURI(i.tokenId);
-        const meta = await axios.get(tokenUri);
-        let price = web3.utils.fromWei(i.price.toString(), "ether");
-        let item = {
-          price,
-          name: meta.data.name,
-          tokenId: i.tokenId.toNumber(),
-          description: meta.data.description,
-          seller: i.seller,
-          owner: i.owner,
-          image: meta.data.image,
-        };
-        return item;
-      })
-    );
-    setMyNfts(items);
-    setMyNftLoadingState(true);
-  }
-
-  async function getSellerFirebaseData(address) {
-    console.log("get user call", address);
-    const q = query(collection(db, "Nft-Marketplace"), where("WalletAddress", "==", address)); 
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      console.log("set docs");
-      setSellerData(doc.data()); 
-    });
-
-  }
-
-  async function loadSellerNfts(sellerAddress) {
-     if(sellerAddress){
-      getSellerFirebaseData(sellerAddress);
-     }
-    let web3 = new Web3();
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-
-    const marketContract = new ethers.Contract(
-      nftmarketaddress,
-      Market.abi,
-      signer
-    );
-    const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider);
-    const data = await marketContract.fetchSellerNFTs(sellerAddress);
-
-    const items = await Promise.all(
-      data.map(async (i) => {
-        const tokenUri = await tokenContract.tokenURI(i.tokenId);
-        const meta = await axios.get(tokenUri);
-        let price = web3.utils.fromWei(i.price.toString(), "ether");
-        let item = {
-          price,
-          name: meta.data.name,
-          tokenId: i.tokenId.toNumber(),
-          description: meta.data.description,
-          seller: i.seller,
-          owner: i.owner,
-          image: meta.data.image,
-        };
-        return item;
-      })
-    );
-    setSellerNfts(items);
-    setMyNftLoadingState(true);
-    router.push('/profile-details');
-  }
-
-  async function buyNft(nft) {
-    setLoader(true);
-    try {
-      const web3Modal = new Web3Modal();
-      const connection = await web3Modal.connect();
-      const provider = new ethers.providers.Web3Provider(connection);
-
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(
-        nftmarketaddress,
-        Market.abi,
-        signer
-      );
-      const price = ethers.utils.parseUnits(nft.price.toString(), "ether");
-      const transaction = await contract.createMarketSale(
-        nftaddress,
-        nft.tokenId,
-        {
-          value: price,
-        }
-      );
-
-      await transaction.wait();
-      loadNFTs();
-      loadMyNfts();
-      setLoader(false);
-      window.location.href("/my-items");
-    } catch (error) {
-      console.log("err", error);
-    }
-  }
-
-  return (
-    <Web3Context.Provider
-      value={{
-        loadNFTs,
-        buyNft,
-        userId,
-        userAllData,
-        nfts,
-        loader,
-        loadingState,
-        myNfts,
-        myNftLoadingState,
-        loadMyNfts,
-        currentAddress,
-        // userProfiles,
-        userData,
-        sellerNfts,
-        sellerData,
-        getSellerFirebaseData,
-        loadSellerNfts,
-        getUserFirebaseData,
-        getCreatorData,
-        // getUserData,
-        connectWallet,
-        firebaseData,
-        creator,
-      }}
-      {...props}
-    >
-      {props.children}
-    </Web3Context.Provider>
+async function loadNFTs() {
+  setLoadingState(false);
+  let web3 = new Web3();
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider);
+  const marketContract = new ethers.Contract(
+    nftmarketaddress,
+    Market.abi,
+    provider
   );
+  const data = await marketContract.fetchMarketItems();
+  const items = await Promise.all(
+    data.map(async (i) => {
+      const tokenUri = await tokenContract.tokenURI(i.tokenId);
+      const meta = await axios.get(tokenUri);
+      let price = web3.utils.fromWei(i.price.toString(), "ether");
+
+      let item = {
+        price,
+        tokenId: i.tokenId.toNumber(),
+        name: meta.data.name,
+        description: meta.data.description,
+        seller: i.seller,
+        owner: i.owner,
+        image: meta.data.image,
+        category: meta.data.category,
+        nftType: meta.data.nftType,
+      };
+      return item;
+    })
+  );
+  console.log(items, "its me");
+  setNfts(items);
+  setLoadingState(true);
+}
+
+async function loadMyNfts() {
+  let web3 = new Web3();
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
+
+  const marketContract = new ethers.Contract(
+    nftmarketaddress,
+    Market.abi,
+    signer
+  );
+  const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider);
+  const data = await marketContract.fetchMyNFTs();
+
+  const items = await Promise.all(
+    data.map(async (i) => {
+      const tokenUri = await tokenContract.tokenURI(i.tokenId);
+      const meta = await axios.get(tokenUri);
+      let price = web3.utils.fromWei(i.price.toString(), "ether");
+      let item = {
+        price,
+        name: meta.data.name,
+        tokenId: i.tokenId.toNumber(),
+        description: meta.data.description,
+        seller: i.seller,
+        owner: i.owner,
+        image: meta.data.image,
+      };
+      return item;
+    })
+  );
+  setMyNfts(items);
+  setMyNftLoadingState(true);
+}
+
+async function getSellerFirebaseData(address) {
+  console.log("get user call", address);
+  const q = query(collection(db, "Nft-Marketplace"), where("WalletAddress", "==", address));
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    console.log("set docs");
+    setSellerData(doc.data());
+  });
+
+}
+
+async function loadSellerNfts(sellerAddress) {
+  if (sellerAddress) {
+    getSellerFirebaseData(sellerAddress);
+  }
+  let web3 = new Web3();
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
+
+  const marketContract = new ethers.Contract(
+    nftmarketaddress,
+    Market.abi,
+    signer
+  );
+  const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider);
+  const data = await marketContract.fetchSellerNFTs(sellerAddress);
+
+  const items = await Promise.all(
+    data.map(async (i) => {
+      const tokenUri = await tokenContract.tokenURI(i.tokenId);
+      const meta = await axios.get(tokenUri);
+      let price = web3.utils.fromWei(i.price.toString(), "ether");
+      let item = {
+        price,
+        name: meta.data.name,
+        tokenId: i.tokenId.toNumber(),
+        description: meta.data.description,
+        seller: i.seller,
+        owner: i.owner,
+        image: meta.data.image,
+      };
+      return item;
+    })
+  );
+  setSellerNfts(items);
+  setMyNftLoadingState(true);
+  router.push('/profile-details');
+}
+
+async function buyNft(nft) {
+  setLoader(true);
+  try {
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(
+      nftmarketaddress,
+      Market.abi,
+      signer
+    );
+    const price = ethers.utils.parseUnits(nft.price.toString(), "ether");
+    const transaction = await contract.createMarketSale(
+      nftaddress,
+      nft.tokenId,
+      {
+        value: price,
+      }
+    );
+
+    await transaction.wait();
+    loadNFTs();
+    loadMyNfts();
+    setLoader(false);
+    window.location.href("/my-items");
+  } catch (error) {
+    console.log("err", error);
+  }
+}
+
+return (
+  <Web3Context.Provider
+    value={{
+      loadNFTs,
+      buyNft,
+      userId,
+      userAllData,
+      nfts,
+      loader,
+      loadingState,
+      myNfts,
+      myNftLoadingState,
+      loadMyNfts,
+      currentAddress,
+      // userProfiles,
+      userData,
+      sellerNfts,
+      sellerData,
+      getSellerFirebaseData,
+      loadSellerNfts,
+      getUserFirebaseData,
+      getCreatorData,
+      // getUserData,
+      connectWallet,
+      firebaseData,
+      creator,
+    }}
+    {...props}
+  >
+    {props.children}
+  </Web3Context.Provider>
+);
 };
