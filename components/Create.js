@@ -52,7 +52,7 @@ function Create() {
       description,
       image: fileUrl,
       category,
-      nftType
+      nftType,
     });
     try {
       const added = await client.add(data);
@@ -80,12 +80,14 @@ function Create() {
 
     const listingPrice = web3.utils.toWei("0.1", "ether");
 
-    contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
-    transaction = await contract.createMarketItem(nftaddress, tokenId,price, { value: listingPrice })
-    
-    await transaction.wait()
-    setLoader(false)
-    router.push('/explore')
+    contract = new ethers.Contract(nftmarketaddress, Market.abi, signer);
+    transaction = await contract.createMarketItem(nftaddress, tokenId, price, {
+      value: listingPrice,
+    });
+
+    await transaction.wait();
+    setLoader(false);
+    router.push("/explore");
   }
 
   // async function onChange(e) {
@@ -101,7 +103,7 @@ function Create() {
   //     setFileUrl(url)
   //   } catch (error) {
   //     console.log('Error uploading file: ', error);
-  //   }  
+  //   }
   // }
 
   return (
@@ -193,6 +195,9 @@ function Create() {
                         })
                       }
                     >
+                      <option selected value="">
+                        Category
+                      </option>
                       <option value="Christmas Gift">Christmas Gift</option>
                       <option value="New Year Gift">New Year Gift</option>
                       <option value="Valentines Gift">Valentines Gift</option>
@@ -213,6 +218,9 @@ function Create() {
                         })
                       }
                     >
+                      <option selected value="">
+                        Nft Type
+                      </option>
                       <option value="Poetry">Poetry</option>
                       <option value="Music">Music</option>
                       <option value="Art">Art</option>
@@ -260,7 +268,11 @@ function Create() {
                     </Fab> :  <img className="lazy" src="/img/author/author-1.jpg" alt />
                     }
                     */}
-                    <img className="lazy" src="/img/author/author-1.jpg" alt="true" />
+                    <img
+                      className="lazy"
+                      src="/img/author/author-1.jpg"
+                      alt="true"
+                    />
                     <i className="fa fa-check" />
                   </a>
                 </div>
@@ -290,7 +302,8 @@ function Create() {
                     </h4>
                   </a>
                   <div className="nft__item_price">
-                    {formInput.price == "" ? "0.00" : formInput.price} MATIC<span>1/20</span>
+                    {formInput.price == "" ? "0.00" : formInput.price} MATIC
+                    <span>1/20</span>
                   </div>
                   <div className="nft__item_action">
                     <a href="#">Place a bid</a>

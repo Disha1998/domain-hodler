@@ -2,13 +2,13 @@ import React, { useEffect } from "react";
 
 import { Web3Context } from "../context/Web3Context";
 import Link from "next/link";
-import { Avatar, Fab } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+import { Avatar, Fab } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
 import { useRouter } from "next/router";
 
 const useStyles = makeStyles((theme) => ({
@@ -21,19 +21,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 function Explore() {
   const classes = useStyles();
-  const router = useRouter()
+  const router = useRouter();
   const web3Context = React.useContext(Web3Context);
-  const { nfts, loadingState, loadNFTs, loader, buyNft } = web3Context;
+  const { nfts, loadingState, loadNFTs, loader, buyNft, userAllData, loadSellerNfts } = web3Context;
 
   const [selectedValues, updateSelectedValues] = React.useState({
     category: "",
     nftType: "",
   });
   const [nftsData, setNfts] = React.useState(nfts);
-
 
   useEffect(() => {
     loadNFTs();
@@ -42,7 +40,6 @@ function Explore() {
   useEffect(() => {
     setNfts(nfts);
   }, [nfts]);
-
 
   const handleChange = (event) => {
     setCategory(event.target.value);
@@ -53,13 +50,12 @@ function Explore() {
 
   const handleSellerProfile = (add) => {
     loadSellerNfts(add);
-  }
-
+  };
 
   return (
     <div className="no-bottom no-top" id="content">
       <div id="top" />
-      { }
+      {}
       <section id="subheader" className="text-light bg-container">
         <div className="center-y relative text-center">
           <div className="container">
@@ -192,7 +188,7 @@ function Explore() {
                               name: nft.name,
                               price: nft.price,
                               owner: nft.owner,
-                              page: 'explore'
+                              page: "explore",
                             },
                           }}
                         >
@@ -233,7 +229,7 @@ function Explore() {
                           </div>
                         </Link>
                       </div>
-                    )
+                    );
                   })}
                 </>
               )}
@@ -247,14 +243,60 @@ function Explore() {
                   Load more
                 </a>
               </div>
-              
             </div>
-            
           }
         </div>
       </section>
-    </div>
 
+      <section id="section-popular" className="pb-5">
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-12">
+              <div className="text-center">
+                <h2>Top Sellers</h2>
+                <div className="small-border bg-color-2" />
+              </div>
+            </div>
+            <div className="col-md-12 wow fadeIn">
+              <ol className="author_list">
+                {userAllData
+                  ? userAllData.map((e) => {
+                      return (
+                        <li key={e.WalletAddress}>
+                          <div className="author_list_pp">
+                            {/* <a href=""> */}
+                            <Fab
+                              size="small"
+                              color="secondary"
+                              className="ml-3 font-weight-bold"
+                            >
+                              {e.Initials}
+                            </Fab>
+                            {/* <img
+                            className="lazy"
+                            src="/img/author/author-1.jpg"
+                            alt="image"
+                          />
+                          <i className="fa fa-check" /> */}
+                            {/* </a> */}
+                          </div>
+                          <div
+                            onClick={() => handleSellerProfile(e.WalletAddress)}
+                            className="author_list_info"
+                          >
+                            <a href="#">{e.Name}</a>
+                            {/* <span>3.2 ETH</span> */}
+                          </div>
+                        </li>
+                      );
+                    })
+                  : ""}
+              </ol>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
 
