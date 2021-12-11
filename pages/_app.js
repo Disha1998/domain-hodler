@@ -3,6 +3,7 @@ import Layout from "../components/Layout";
 import Head from "next/head";
 import { Web3ContextProvider } from "../context/Web3Context";
 function MyApp({ Component, pageProps }) {
+
   return (
     <Web3ContextProvider>
       <Layout>
@@ -24,21 +25,55 @@ function MyApp({ Component, pageProps }) {
           <link rel="stylesheet" type="text/css" href="css/app.min.css" />
           <link rel="stylesheet" type="text/css" href="css/custom.css" />
 
-          <link id="bootstrap" href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-          <link id="bootstrap-grid" href="css/bootstrap-grid.min.css" rel="stylesheet" type="text/css" />
-          <link id="bootstrap-reboot" href="css/bootstrap-reboot.min.css" rel="stylesheet" type="text/css" />
+          <link
+            id="bootstrap"
+            href="css/bootstrap.min.css"
+            rel="stylesheet"
+            type="text/css"
+          />
+          <link
+            id="bootstrap-grid"
+            href="css/bootstrap-grid.min.css"
+            rel="stylesheet"
+            type="text/css"
+          />
+          <link
+            id="bootstrap-reboot"
+            href="css/bootstrap-reboot.min.css"
+            rel="stylesheet"
+            type="text/css"
+          />
           <link href="css/animate.css" rel="stylesheet" type="text/css" />
           <link href="css/owl.carousel.css" rel="stylesheet" type="text/css" />
           <link href="css/owl.theme.css" rel="stylesheet" type="text/css" />
-          <link href="css/owl.transitions.css" rel="stylesheet" type="text/css" />
-          <link href="css/magnific-popup.css" rel="stylesheet" type="text/css" />
-          <link href="css/jquery.countdown.css" rel="stylesheet" type="text/css" />
+          <link
+            href="css/owl.transitions.css"
+            rel="stylesheet"
+            type="text/css"
+          />
+          <link
+            href="css/magnific-popup.css"
+            rel="stylesheet"
+            type="text/css"
+          />
+          <link
+            href="css/jquery.countdown.css"
+            rel="stylesheet"
+            type="text/css"
+          />
           <link href="css/style.css" rel="stylesheet" type="text/css" />
 
-          <link id="colors" href="css/colors/scheme-01.css" rel="stylesheet" type="text/css" />
-          <link href="css/coloring.css" rel="stylesheet" type="text/css" /> 
-          <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
-
+          <link
+            id="colors"
+            href="css/colors/scheme-01.css"
+            rel="stylesheet"
+            type="text/css"
+          />
+          <link href="css/coloring.css" rel="stylesheet" type="text/css" />
+          <link
+            href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+            rel="stylesheet"
+          />
 
           <script src="js/jquery.min.js"></script>
           <script src="js/bootstrap.min.js"></script>

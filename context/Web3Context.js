@@ -24,7 +24,7 @@ import {
   getDocs,
   Timestamp,
 } from "firebase/firestore";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
 import { db, auth, storage } from "../firebase/clientApp";
 export const Web3Context = createContext(undefined);
@@ -39,27 +39,40 @@ export const Web3ContextProvider = (props) => {
   const [userData, setUserData] = useState([]);
   const [firebaseData, setfirebaseData] = useState([]);
   const [loader, setLoader] = useState(false);
-  const [userId, setUserId] = useState('');
+  const [userId, setUserId] = useState("");
   const [userAllData, setuserAllData] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+
 
   useEffect(() => {
     let web3 = new Web3();
     firebase();
 
+
+    window.onunload = () => {
+      // Clear the local storage
+      window.Storage.clear();
+    };
     // window.ethereum.enable().then(function (accounts) {
     //   setCurrentAddress(web3.utils.toChecksumAddress(accounts[0]));
     //   firebase();
     // });
+    let account = localStorage.getItem("account");
+    if (account !== null) {
+      setCurrentAddress(account);
+    }
 
     window.ethereum.on("accountsChanged", function (accounts) {
-      if (accounts.length > 0) setCurrentAddress(accounts[0]);
-      else {
-        setCurrentAddress(""); 
+      if (accounts.length > 0) {
+        setCurrentAddress(accounts[0]);
+        localStorage.setItem("account", accounts[0]);
+      } else {
+        setCurrentAddress("");
         localStorage.setItem("account", null);
       }
-      setIsRefreshing(false); 
-      loadMyNfts(); 
+      setIsRefreshing(false);
+      loadMyNfts();
     });
     getAllUserFirebaseData();
     getUserFirebaseData(currentAddress);
@@ -71,11 +84,10 @@ export const Web3ContextProvider = (props) => {
     setIsRefreshing(true);
   };
 
-
-  async function getAllUserFirebaseData() { 
+  async function getAllUserFirebaseData() {
     const userData = collection(db, "Nft-Marketplace");
     const userSnapshot = await getDocs(userData);
-    const userList = userSnapshot.docs.map((doc) => doc.data()); 
+    const userList = userSnapshot.docs.map((doc) => doc.data());
     setuserAllData(userList);
     // userList.forEach((e) => {
     //   setuserAllData(e);
@@ -83,12 +95,13 @@ export const Web3ContextProvider = (props) => {
   }
 
   async function getUserFirebaseData(address) {
-    console.log("get user call", address);  
-    const q = query(collection(db, "Nft-Marketplace"), where("WalletAddress", "==", address));
-    
-    const querySnapshot = await getDocs(q); 
+    const q = query(
+      collection(db, "Nft-Marketplace"),
+      where("WalletAddress", "==", address)
+    );
+
+    const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      console.log("set docs");
       setUserData(doc.data());
       setUserId(doc.id);
     });
@@ -110,13 +123,16 @@ export const Web3ContextProvider = (props) => {
       web3 = new Web3(window.ethereum);
       try {
         window.ethereum.enable().then(function (accounts) {
-          setCurrentAddress(accounts[0]);  
+          setCurrentAddress(accounts[0]);
+          localStorage.setItem("account", accounts[0]);
           window.ethereum.on("accountsChanged", function (accounts) {
-            setCurrentAddress(accounts[0]); 
+            setCurrentAddress(accounts[0]);
+            localStorage.setItem("account", accounts[0]);
           });
         });
       } catch (e) {
         alert("User rejected the MetaMask connection request !");
+        localStorage.setItem("account", null);
       }
     } else if (window.web3) {
       web3 = new Web3(window.web3.currentProvider);
@@ -153,10 +169,9 @@ export const Web3ContextProvider = (props) => {
 
   async function getUserData() {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner()
+    const signer = provider.getSigner();
     const userContract = new ethers.Contract(useraddresss, User.abi, signer);
     const data = await userContract.getUser(currentAddress);
-    console.log(data, "user data");
     setUserData(data);
   }
 
@@ -255,7 +270,6 @@ export const Web3ContextProvider = (props) => {
       loadMyNfts();
       setLoader(false);
     } catch (error) {
-      console.log("err jj", error);
       console.log("err", error);
     }
   }

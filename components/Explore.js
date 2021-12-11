@@ -49,7 +49,7 @@ function Explore() {
                         key={i}
                         className="col-lg-3 col-md-6 col-sm-6 col-xs-12"
                       >
-                        {/* <Link
+                        <Link
                           href={{
                             pathname: "details",
                             query: {
@@ -59,10 +59,11 @@ function Explore() {
                               tokenId: nft.tokenId,
                               name: nft.name,
                               price: nft.price,
-                              owner:nft.owner
+                              owner:nft.owner,
+                              page:'explore'
                             },
                           }}
-                        > */}
+                        >
                           <div className="nft__item">
                             <div className="author_list_pp">
                               <a href="author.html">
@@ -91,7 +92,6 @@ function Explore() {
                               </div>
                               <div
                                 className="nft__item_action"  
-                                onClick={() => buyNft(nft)}
                               >
                                 <a href="#">Buy Now</a>
                               </div>
@@ -101,7 +101,7 @@ function Explore() {
                               </div>
                             </div>
                           </div>
-                        {/* </Link> */}
+                        </Link>
                       </div>
                     );
                   })}

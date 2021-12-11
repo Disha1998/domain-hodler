@@ -16552,7 +16552,7 @@ a.read_more i {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 200px;
+    max-width: 165px;
     overflow: hidden;
     float: left;
     color: #727272;
