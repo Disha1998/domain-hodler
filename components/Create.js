@@ -76,28 +76,28 @@ const { currentAddress, userData,userId } = web3Context;
     const listingPrice = web3.utils.toWei('0.1', 'ether')
 
     contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
-    transaction = await contract.createMarketItem(nftaddress, tokenId, price, { value: listingPrice })
+    transaction = await contract.createMarketItem(nftaddress, tokenId,price, { value: listingPrice })
     
     await transaction.wait()
     setLoader(false)
     router.push('/explore')
   }
 
-  async function onChange(e) {
-    const file = e.target.files[0];
-    try {
-      const added = await client.add(
-        file,
-        {
-          progress: (prog) => console.log(`received: ${prog}`)
-        }
-      )
-      const url = `https://ipfs.infura.io/ipfs/${added.path}`
-      setFileUrl(url)
-    } catch (error) {
-      console.log('Error uploading file: ', error);
-    }  
-  }
+  // async function onChange(e) {
+  //   const file = e.target.files[0];
+  //   try {
+  //     const added = await client.add(
+  //       file,
+  //       {
+  //         progress: (prog) => console.log(`received: ${prog}`)
+  //       }
+  //     )
+  //     const url = `https://ipfs.infura.io/ipfs/${added.path}`
+  //     setFileUrl(url)
+  //   } catch (error) {
+  //     console.log('Error uploading file: ', error);
+  //   }  
+  // }
 
   return (
     <div className="no-bottom no-top" id="content">
@@ -187,14 +187,14 @@ const { currentAddress, userData,userId } = web3Context;
                     placeholder="enter price for one item (MATIC)"
                   />
                   <div className="spacer-10" />
-                  <h5>Royalties</h5>
+                  {/* <h5>Royalties</h5>
                   <input
                     type="text"
                     name="item_royalties"
                     id="item_royalties"
                     className="form-control"
                     placeholder="suggested: 0, 10%, 20%, 30%. Maximum is 70%"
-                  />
+                  /> */}
                   <div className="spacer-10" />
                   <input
                     type="button"
@@ -228,7 +228,7 @@ const { currentAddress, userData,userId } = web3Context;
                       <img
                         id="get_file_2"
                         className="lazy nft__item_preview"
-                        alt
+                        alt="true"
                         src={fileUrl}
                       />
                     ) : (
@@ -246,7 +246,7 @@ const { currentAddress, userData,userId } = web3Context;
                     <h4>{formInput.name == "" ? "Pinky Ocean" : formInput.name}</h4>
                   </a>
                   <div className="nft__item_price">
-                    {formInput.price == "" ? "0.00" : formInput.price} ETH<span>1/20</span>
+                    {formInput.price == "" ? "0.00" : formInput.price} MATIC<span>1/20</span>
                   </div>
                   <div className="nft__item_action">
                     <a href="#">Place a bid</a>

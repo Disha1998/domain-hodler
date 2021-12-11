@@ -48,3 +48,10 @@ a {
 div#connect {
   cursor: pointer;
 }
+
+.MuiInputLabel-outlined.MuiInputLabel-shrink {
+  transform: translate(14px, -10px) scale(0.8) !important; 
+  background: white !important;
+  color: #8364E2 !important;
+  font-weight: 900 !important;
+}
