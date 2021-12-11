@@ -1,8 +1,10 @@
-import HomeComponent from "../components/Home";
+import Explore from "../components/Explore";
 
 
 export default function Home() {
   return (
-    <HomeComponent/>
+    <Explore/>
   )
 }
+
+

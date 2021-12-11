@@ -87,7 +87,7 @@ function Create() {
 
     await transaction.wait();
     setLoader(false);
-    router.push("/explore");
+    router.push("/");
   }
 
   // async function onChange(e) {

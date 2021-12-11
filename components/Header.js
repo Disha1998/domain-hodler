@@ -27,7 +27,7 @@ function Header() {
   return (
     <header
       className={`transparent ${
-        router.asPath == "/" ? "header-dark" : "header-blue"
+        router.asPath == "/" ? "header-blue" : "header-blue"
       } scroll-light`}
     >
       <div className="container">
@@ -43,7 +43,7 @@ function Header() {
                         alt="image"
                         className="logo"
                         src={`/img/${
-                          router.asPath == "/explore" ||
+                          router.asPath == "/" ||
                           router.asPath == "/create" ||
                           router.asPath == "/profile" ||
                           router.asPath == "/my-items"
@@ -67,11 +67,9 @@ function Header() {
                   id="mainmenu"
                   className={` ${isSticky ? "" : "header-dark-text"}`}
                 >
+
                   <li>
-                    <a href="/">Home</a>
-                  </li>
-                  <li>
-                    <Link href="explore">Explore</Link>
+                    <Link href="/">Explore</Link>
                   </li>
                   <li>
                     <Link href="my-items">My items</Link>
@@ -108,7 +106,7 @@ function Header() {
                     <span
                       id="wallet"
                       className="profile_wallet"
-                      style={{ color: router.asPath == "/" ? "black" : "white" }}
+                      style={{ color:  "white" }}
                     >
                       {currentAddress ? (
                         currentAddress

@@ -338,7 +338,7 @@ export const Web3ContextProvider = (props) => {
       loadNFTs();
       loadMyNfts();
       setLoader(false);
-      window.location.href("/my-items");
+      router.push('/my-items');
     } catch (error) {
       console.log("err", error);
     }

@@ -46,34 +46,14 @@ function NftDetails({ router: { query } }) {
               <div className="col-md-6">
                 <div className="item_info">
                   <h2>{`${query.name}#${query.tokenId}`}</h2>
-                  <div className="item_info_counts">
-                    <div className="item_info_type">
-                      <i className="fa fa-image"></i>Art
-                    </div>
-                    <div className="item_info_views">
-                      <i className="fa fa-eye"></i>250
-                    </div>
-                    <div className="item_info_like">
-                      <i className="fa fa-heart"></i>18
-                    </div>
-                  </div>
+                 
                   <p>{query.description} </p>
                   <div className="d-flex flex-row mb-4">
                     <div className="mr40">
-                      <h6>Creator</h6>
+                      <h6>Creator Address</h6>
                       <div className="item_author">
                         <div className="author_list_pp">
-                          <a href="">
-                            <Fab
-                              size="small"
-                              color="secondary"
-                              className="ml-3 font-weight-bold"
-                            >
-                              {creator != undefined ? creator.Initials : "u"}
-                            </Fab>
-                            {/* <img alt="nft-img" className="lazy" src="/img/author/author-1.jpg" alt="" /> */}
-                            <i className="fa fa-check"></i>
-                          </a>
+                          {query.seller}
                         </div>
                         <div className="author_list_info">
                           {creator != undefined ? creator.Name : "User"}
