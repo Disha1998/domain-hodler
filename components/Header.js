@@ -108,7 +108,7 @@ function Header() {
                     <span
                       id="wallet"
                       className="profile_wallet"
-                      style={{ color: "#000" }}
+                      style={{ color: router.asPath == "/" ? "black" : "white" }}
                     >
                       {currentAddress ? (
                         currentAddress

@@ -10,6 +10,17 @@
     margin-right: 25px;
 }
 
+.currentPrice{
+    font-weight: 600;
+}
+
+.price{
+    display: flex;
+    font-size: 25px;
+    margin-top: 10px;
+    font-weight: 700;
+}
+
 .bg-container{
     background-image: url(/img/background/subheader.jpg);
 }
