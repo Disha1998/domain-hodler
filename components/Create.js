@@ -80,28 +80,29 @@ function Create() {
 
     const listingPrice = web3.utils.toWei("0.1", "ether");
 
-    contract = new ethers.Contract(nftmarketaddress, Market.abi, signer);
-    transaction = await contract.createMarketItem(nftaddress, tokenId, price, {
-      value: listingPrice,
-    });
-
-    await transaction.wait();
-    setLoader(false);
-    router.push("/explore");
+    contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
+    transaction = await contract.createMarketItem(nftaddress, tokenId,price, { value: listingPrice })
+    
+    await transaction.wait()
+    setLoader(false)
+    router.push('/explore')
   }
 
-  async function onChange(e) {
-    const file = e.target.files[0];
-    try {
-      const added = await client.add(file, {
-        progress: (prog) => console.log(`received: ${prog}`),
-      });
-      const url = `https://ipfs.infura.io/ipfs/${added.path}`;
-      setFileUrl(url);
-    } catch (error) {
-      console.log("Error uploading file: ", error);
-    }
-  }
+  // async function onChange(e) {
+  //   const file = e.target.files[0];
+  //   try {
+  //     const added = await client.add(
+  //       file,
+  //       {
+  //         progress: (prog) => console.log(`received: ${prog}`)
+  //       }
+  //     )
+  //     const url = `https://ipfs.infura.io/ipfs/${added.path}`
+  //     setFileUrl(url)
+  //   } catch (error) {
+  //     console.log('Error uploading file: ', error);
+  //   }  
+  // }
 
   return (
     <div className="no-bottom no-top" id="content">
@@ -259,7 +260,7 @@ function Create() {
                     </Fab> :  <img className="lazy" src="/img/author/author-1.jpg" alt />
                     }
                     */}
-                    <img className="lazy" src="/img/author/author-1.jpg" alt />
+                    <img className="lazy" src="/img/author/author-1.jpg" alt="true" />
                     <i className="fa fa-check" />
                   </a>
                 </div>
@@ -269,7 +270,7 @@ function Create() {
                       <img
                         id="get_file_2"
                         className="lazy nft__item_preview"
-                        alt
+                        alt="true"
                         src={fileUrl}
                       />
                     ) : (
@@ -289,8 +290,7 @@ function Create() {
                     </h4>
                   </a>
                   <div className="nft__item_price">
-                    {formInput.price == "" ? "0.00" : formInput.price} ETH
-                    <span>1/20</span>
+                    {formInput.price == "" ? "0.00" : formInput.price} MATIC<span>1/20</span>
                   </div>
                   <div className="nft__item_action">
                     <a href="#">Place a bid</a>

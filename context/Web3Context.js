@@ -44,6 +44,9 @@ export const Web3ContextProvider = (props) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [creator, setCreator] = useState("");
 
+  const [sellerNfts, setSellerNfts] = useState([]);
+  const [sellerData, setSellerData] = useState([]);
+
   useEffect(() => {
     let web3 = new Web3();
     firebase();
@@ -93,10 +96,8 @@ export const Web3ContextProvider = (props) => {
   }
 
   async function getUserFirebaseData(address) {
-    const q = query(
-      collection(db, "Nft-Marketplace"),
-      where("WalletAddress", "==", address)
-    );
+    console.log("get user call", address);
+    const q = query(collection(db, "Nft-Marketplace"), where("WalletAddress", "==", address));
 
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
@@ -262,6 +263,55 @@ export const Web3ContextProvider = (props) => {
     setMyNftLoadingState(true);
   }
 
+  async function getSellerFirebaseData(address) {
+    console.log("get user call", address);
+    const q = query(collection(db, "Nft-Marketplace"), where("WalletAddress", "==", address)); 
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      console.log("set docs");
+      setSellerData(doc.data()); 
+    });
+
+  }
+
+  async function loadSellerNfts(sellerAddress) {
+     if(sellerAddress){
+      getSellerFirebaseData(sellerAddress);
+     }
+    let web3 = new Web3();
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+
+    const marketContract = new ethers.Contract(
+      nftmarketaddress,
+      Market.abi,
+      signer
+    );
+    const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider);
+    const data = await marketContract.fetchSellerNFTs(sellerAddress);
+
+    const items = await Promise.all(
+      data.map(async (i) => {
+        const tokenUri = await tokenContract.tokenURI(i.tokenId);
+        const meta = await axios.get(tokenUri);
+        let price = web3.utils.fromWei(i.price.toString(), "ether");
+        let item = {
+          price,
+          name: meta.data.name,
+          tokenId: i.tokenId.toNumber(),
+          description: meta.data.description,
+          seller: i.seller,
+          owner: i.owner,
+          image: meta.data.image,
+        };
+        return item;
+      })
+    );
+    setSellerNfts(items);
+    setMyNftLoadingState(true);
+    router.push('/profile-details');
+  }
+
   async function buyNft(nft) {
     setLoader(true);
     try {
@@ -276,7 +326,6 @@ export const Web3ContextProvider = (props) => {
         signer
       );
       const price = ethers.utils.parseUnits(nft.price.toString(), "ether");
-
       const transaction = await contract.createMarketSale(
         nftaddress,
         nft.tokenId,
@@ -311,6 +360,10 @@ export const Web3ContextProvider = (props) => {
         currentAddress,
         // userProfiles,
         userData,
+        sellerNfts,
+        sellerData,
+        getSellerFirebaseData,
+        loadSellerNfts,
         getUserFirebaseData,
         getCreatorData,
         // getUserData,

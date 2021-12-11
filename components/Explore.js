@@ -2,8 +2,29 @@ import React, { useEffect } from "react";
 
 import { Web3Context } from "../context/Web3Context";
 import Link from "next/link";
+import { Avatar, Fab } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import { useRouter } from "next/router";
+
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 160,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+}));
+
 
 function Explore() {
+  const classes = useStyles();
+  const router = useRouter()
   const web3Context = React.useContext(Web3Context);
   const { nfts, loadingState, loadNFTs, loader, buyNft } = web3Context;
 
@@ -13,6 +34,7 @@ function Explore() {
   });
   const [nftsData, setNfts] = React.useState(nfts);
 
+
   useEffect(() => {
     loadNFTs();
   }, []);
@@ -21,13 +43,23 @@ function Explore() {
     setNfts(nfts);
   }, [nfts]);
 
-  console.log(nftsData);
-  console.log(selectedValues.category);
+
+  const handleChange = (event) => {
+    setCategory(event.target.value);
+  };
+  const handleChangeNfttype = (event) => {
+    setNftType(event.target.value);
+  };
+
+  const handleSellerProfile = (add) => {
+    loadSellerNfts(add);
+  }
+
 
   return (
     <div className="no-bottom no-top" id="content">
       <div id="top" />
-      {}
+      { }
       <section id="subheader" className="text-light bg-container">
         <div className="center-y relative text-center">
           <div className="container">
@@ -160,7 +192,7 @@ function Explore() {
                               name: nft.name,
                               price: nft.price,
                               owner: nft.owner,
-                              page: "explore",
+                              page: 'explore'
                             },
                           }}
                         >
@@ -201,7 +233,7 @@ function Explore() {
                           </div>
                         </Link>
                       </div>
-                    );
+                    )
                   })}
                 </>
               )}
@@ -222,6 +254,7 @@ function Explore() {
         </div>
       </section>
     </div>
+
   );
 }
 
