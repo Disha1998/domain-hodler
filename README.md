@@ -1,24 +1,29 @@
-# Basic Sample Hardhat Project
+# Domain Hodler
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
+Hello Everyone, we have built a platform to buy, sell 1) Blockchain Domain Names 2) Web Domain names, and 3) Websites and Blogs.
 
-Try running some of the following tasks:
+Users will be able to create NFT versions of their domain names and incase of Web 2 domain names, users will have to verify ownership of their domain through their Domain registrar by adding txt record.
 
-```shell
-npx hardhat accounts
-npx hardhat compile a
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
-```
+All domains will be represented as NFT in Blockchain. Users can join specific groups & attends events as per the NFT they are holding. For example, users who have three-letter domain name NFT are allowed to join the particular event.
 
-# Contract Deployment
+<img
+src=“/img/home1.png”
+raw=true
+alt=“Subject Pronouns”
+style=“margin-right: 10px;”
+/>
 
-```shell
-npx hardhat node
-npx hardhat run scripts/deploy.js --network ropsten
-Add both the addresses into config.js file
-```# nft-marketplace-polygon
-# nft-marketplace-polygon
+
+<img
+src=“/img/home2.png”
+raw=true
+alt=“Subject Pronouns”
+style=“margin-right: 10px;”
+/>
+
+<img
+src=“/img/sell.png”
+raw=true
+alt=“Subject Pronouns”
+style=“margin-right: 10px;”
+/>

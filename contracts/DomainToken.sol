@@ -6,12 +6,12 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 import "hardhat/console.sol";
 
-contract NFT is ERC721URIStorage {
+contract DomainToken is ERC721URIStorage {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     address contractAddress;
 
-    constructor(address marketplaceAddress) ERC721("CodeCrunch", "CCT") {
+    constructor(address marketplaceAddress) ERC721("DomainHodler", "DHL") {
         contractAddress = marketplaceAddress;
     }
 

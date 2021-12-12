@@ -2,12 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Web3Context } from "../context/Web3Context";
-
 function Header() {
   const router = useRouter();
   const web3Context = React.useContext(Web3Context);
   const { currentAddress, connectWallet } = web3Context;
-
   const [isSticky, setSticky] = useState(false);
   const ref = useRef(null);
   const handleScroll = () => {
@@ -15,21 +13,14 @@ function Header() {
       setSticky(ref.current.getBoundingClientRect().top <= 0);
     }
   };
-
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
-
     return () => {
       window.removeEventListener("scroll", () => handleScroll);
     };
   }, []);
-
   return (
-    <header
-      className={`transparent ${
-        router.asPath == "/" ? "header-blue" : "header-blue"
-      } scroll-light`}
-    >
+    <header className={`bg-gredient`}>
       <div className="container">
         <div className="row">
           <div className="col-md-12">
@@ -38,24 +29,8 @@ function Header() {
                 <div className="de-flex-col">
                   {}
                   <div id="logo">
-                    <a href="">
-                      <img
-                        alt="image"
-                        className="logo"
-                        src={`/img/${
-                          router.asPath == "/" ||
-                          router.asPath == "/create" ||
-                          router.asPath == "/profile" ||
-                          router.asPath == "/my-items"
-                            ? "logo5.png"
-                            : "logo5.png"
-                        }`}
-                      />
-                      <img
-                        alt="image"
-                        className="logo-2"
-                        src="/img/logo5.png"
-                      />
+                    <a href="/">
+                      <h4 className="logo">Domain Hodler</h4>
                     </a>
                   </div>
                   {}
@@ -67,20 +42,13 @@ function Header() {
                   id="mainmenu"
                   className={` ${isSticky ? "" : "header-dark-text"}`}
                 >
+                  <li>
+                    <Link href="/">Browse</Link>
+                  </li>
+                  <li>
+                    <Link href="/sell">Sell</Link>
+                  </li>
 
-                  <li>
-                    <Link href="/">Explore</Link>
-                  </li>
-                  <li>
-                    <Link href="my-items">My items</Link>
-                  </li>
-
-                  <li>
-                    <Link href="create">Create</Link>
-                  </li>
-                  <li>
-                    <Link href="profile"> Profile</Link>
-                  </li>
                   {/* <li id="profile">
                     <a href="profile.html">
                       Profile
@@ -88,8 +56,10 @@ function Header() {
                     </a>
                   </li> */}
                 </ul>
-
-                {currentAddress === "" || currentAddress === "null" || currentAddress === null ? (
+                {currentAddress === "" ||
+                currentAddress === "null" ||
+                currentAddress === null ||
+                currentAddress === "undefined" ? (
                   <div
                     className="menu_side_area"
                     id="connect"
@@ -106,7 +76,7 @@ function Header() {
                     <span
                       id="wallet"
                       className="profile_wallet"
-                      style={{ color:  "white" }}
+                      style={{ color: "white" }}
                     >
                       {currentAddress ? (
                         currentAddress
@@ -131,5 +101,4 @@ function Header() {
     </header>
   );
 }
-
 export default Header;

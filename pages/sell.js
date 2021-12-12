@@ -1,6 +1,6 @@
 import Create from "../components/Create";
 
-export default function Home() {
+export default function CreatePage() {
   return (
     <Create/>
   )

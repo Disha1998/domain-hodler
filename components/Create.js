@@ -8,22 +8,21 @@ import { ethers } from "ethers";
 import { create as ipfsHttpClient } from "ipfs-http-client";
 import { useRouter } from "next/router";
 import Web3Modal from "web3modal";
-import { nftaddress, nftmarketaddress } from "../config";
-import NFT from "../artifacts/contracts/NFT.sol/NFT.json";
-import Market from "../artifacts/contracts/NFTMarket.sol/NFTMarket.json";
+import { domainTokenaddress, domainMarketaddress } from "../config";
+import DomainToken from "../artifacts/contracts/DomainToken.sol/DomainToken.json";
+import DomainMarket from "../artifacts/contracts/DomainMarket.sol/DomainMarket.json";
 import web3 from "web3";
-import { Avatar, Fab } from "@material-ui/core";
 
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
 function Create() {
   const [fileUrl, setFileUrl] = useState(null);
   const [formInput, updateFormInput] = useState({
-    price: "",
     name: "",
-    description: "",
+    price: "",
+    type: "",
+    url: "",
     category: "",
-    nftType: "",
   });
   const router = useRouter();
   const [loader, setLoader] = useState(false);
@@ -44,15 +43,15 @@ function Create() {
     }
   }
   async function createItem() {
-    const { name, description, price, category, nftType } = formInput;
-    if (!name || !description || !price || !fileUrl) return;
+    const { name, price, type, url, category } = formInput;
+    if (!name || !type || !price || !url || !category) return;
     /* first, upload to IPFS */
     const data = JSON.stringify({
       name,
-      description,
+      type,
       image: fileUrl,
       category,
-      nftType,
+      url,
     });
     try {
       const added = await client.add(data);
@@ -70,7 +69,7 @@ function Create() {
     const provider = new ethers.providers.Web3Provider(connection);
     const signer = provider.getSigner();
 
-    let contract = new ethers.Contract(nftaddress, NFT.abi, signer);
+    let contract = new ethers.Contract(domainTokenaddress, DomainToken.abi, signer);
     let transaction = await contract.createToken(url);
     let tx = await transaction.wait();
     let event = tx.events[0];
@@ -80,8 +79,8 @@ function Create() {
 
     const listingPrice = web3.utils.toWei("0.1", "ether");
 
-    contract = new ethers.Contract(nftmarketaddress, Market.abi, signer);
-    transaction = await contract.createMarketItem(nftaddress, tokenId, price, {
+    contract = new ethers.Contract(domainMarketaddress, DomainMarket.abi, signer);
+    transaction = await contract.createMarketItem(domainTokenaddress, tokenId, price, {
       value: listingPrice,
     });
 
@@ -89,22 +88,6 @@ function Create() {
     setLoader(false);
     router.push("/");
   }
-
-  // async function onChange(e) {
-  //   const file = e.target.files[0];
-  //   try {
-  //     const added = await client.add(
-  //       file,
-  //       {
-  //         progress: (prog) => console.log(`received: ${prog}`)
-  //       }
-  //     )
-  //     const url = `https://ipfs.infura.io/ipfs/${added.path}`
-  //     setFileUrl(url)
-  //   } catch (error) {
-  //     console.log('Error uploading file: ', error);
-  //   }
-  // }
 
   return (
     <div className="no-bottom no-top" id="content">
@@ -115,7 +98,7 @@ function Create() {
           <div className="container">
             <div className="row">
               <div className="col-md-12 text-center">
-                <h1>Create</h1>
+                <h1>Sell</h1>
               </div>
               <div className="clearfix" />
             </div>
@@ -126,8 +109,8 @@ function Create() {
       {}
       <section aria-label="section">
         <div className="container">
-          <div className="row wow fadeIn">
-            <div className="col-lg-7 offset-lg-1">
+          <div className="row">
+            <div className="col-md-6 offset-md-3">
               <form
                 id="form-create-item"
                 className="form-border"
@@ -135,9 +118,46 @@ function Create() {
                 action="email.php"
               >
                 <div className="field-set">
-                  <h5>Upload file</h5>
+                  <h5>Name</h5>
+                  <input
+                    type="text"
+                    name="item_title"
+                    id="item_title"
+                    onChange={(e) =>
+                      updateFormInput({ ...formInput, name: e.target.value })
+                    }
+                    className="form-control"
+                    placeholder="e.g. 'abc"
+                  />
+                  <div className="spacer-10" />
+                  <h5>Type</h5>
+                  <div className="form-group">
+                    <select
+                      className="form-control"
+                      id="exampleFormControlSelect1"
+                      onChange={(e) =>
+                        updateFormInput({
+                          ...formInput,
+                          type: e.target.value,
+                        })
+                      }
+                    >
+                      <option selected value="">
+                        Type
+                      </option>
+                      <option value="Blockchain Domain">
+                        Blockchain Domain
+                      </option>
+                      <option value="Web2 Domain">Web2 Domain</option>
+                      <option value="Website and business Domain">
+                        Website and business Domain
+                      </option>
+                    </select>
+                  </div>
+                  <div className="spacer-10" />
+                  <h5>Upload Photo</h5>
                   <div className="d-create-file">
-                    <p id="file_name">PNG, JPG, GIF, WEBP or MP4. Max 200mb.</p>
+                    <p id="file_name">PNG, JPG.</p>
                     <label
                       htmlFor="files"
                       id="get_file"
@@ -154,33 +174,17 @@ function Create() {
                       type="file"
                     />
                   </div>
-                  <div className="spacer-single" />
-                  <h5>Title</h5>
+                  <div className="spacer-10" />
+                  <h5>Url</h5>
                   <input
                     type="text"
-                    name="item_title"
-                    id="item_title"
+                    name="url"
+                    id="url"
                     onChange={(e) =>
-                      updateFormInput({ ...formInput, name: e.target.value })
+                      updateFormInput({ ...formInput, url: e.target.value })
                     }
                     className="form-control"
-                    placeholder="e.g. 'Crypto Funk"
-                  />
-                  <div className="spacer-10" />
-                  <h5>Description</h5>
-                  <textarea
-                    data-autoresize
-                    name="item_desc"
-                    id="item_desc"
-                    onChange={(e) =>
-                      updateFormInput({
-                        ...formInput,
-                        description: e.target.value,
-                      })
-                    }
-                    className="form-control"
-                    placeholder="e.g. 'This is very limited item'"
-                    defaultValue={""}
+                    placeholder="e.g. 'abc.com"
                   />
                   <div className="spacer-10" />
                   <h5>Category</h5>
@@ -198,37 +202,14 @@ function Create() {
                       <option selected value="">
                         Category
                       </option>
-                      <option value="Christmas Gift">Christmas Gift</option>
-                      <option value="New Year Gift">New Year Gift</option>
-                      <option value="Valentines Gift">Valentines Gift</option>
-                      <option value="Birthday Gift">Birthday Gift</option>
-                      <option value="Annivarsary Gift">Annivarsary Gift</option>
+                      <option value="Crypto-Blockchain">Crypto-Blockchain</option>
+                      <option value="Ecommerce">Ecommerce</option>
+                      <option value="Realestate">Realestate</option>
+                      <option value="Entertainment">Entertainment</option>
+                      <option value="Envoirment">Envoirment</option>
+                      <option value="Education">Education</option>
                     </select>
                   </div>
-                  <div className="spacer-10" />
-                  <h5>Nft Type</h5>
-                  <div className="form-group">
-                    <select
-                      className="form-control"
-                      id="exampleFormControlSelect1"
-                      onChange={(e) =>
-                        updateFormInput({
-                          ...formInput,
-                          nftType: e.target.value,
-                        })
-                      }
-                    >
-                      <option selected value="">
-                        Nft Type
-                      </option>
-                      <option value="Poetry">Poetry</option>
-                      <option value="Music">Music</option>
-                      <option value="Art">Art</option>
-                      <option value="Event Ticket">Event Ticket</option>
-                      <option value="Virtualand">Virtualand</option>
-                    </select>
-                  </div>
-
                   <h5>Price</h5>
                   <input
                     type="text"
@@ -238,9 +219,11 @@ function Create() {
                       updateFormInput({ ...formInput, price: e.target.value })
                     }
                     className="form-control"
-                    placeholder="enter price for one item (MATIC)"
+                    placeholder="enter price(MATIC)"
                   />
                   <div className="spacer-10" />
+                  <h5>Verify Ownership</h5>
+                  <span>Txt record - domainhodler.com/tokken=vzeeasgrx24</span>
                   <div className="spacer-10" />
                   <input
                     type="button"
@@ -249,71 +232,13 @@ function Create() {
                     defaultValue={
                       loader == true
                         ? "Loading...! Please wait it will take time"
-                        : "Create Item"
+                        : "Create"
                     }
                     onClick={createItem}
                     disabled={loader ? true : false}
                   />
                 </div>
               </form>
-            </div>
-            <div className="col-lg-3 col-sm-6 col-xs-12">
-              <h5>Preview item</h5>
-              <div className="nft__item">
-                <div className="author_list_pp">
-                  <a href="#">
-                    {/* {
-                      userData.Initials ?   <Fab size="large" color="primary" className="ml-3 font-weight-bold">
-                      { userData.Initials}
-                    </Fab> :  <img className="lazy" src="/img/author/author-1.jpg" alt />
-                    }
-                    */}
-                    <img
-                      className="lazy"
-                      src="/img/author/author-1.jpg"
-                      alt="true"
-                    />
-                    <i className="fa fa-check" />
-                  </a>
-                </div>
-                <div className="nft__item_wrap">
-                  <a href="#">
-                    {fileUrl ? (
-                      <img
-                        id="get_file_2"
-                        className="lazy nft__item_preview"
-                        alt="true"
-                        src={fileUrl}
-                      />
-                    ) : (
-                      <img
-                        src="/img/collections/coll-item-3.jpg"
-                        id="get_file_2"
-                        className="lazy nft__item_preview"
-                        alt="image"
-                      />
-                    )}
-                  </a>
-                </div>
-                <div className="nft__item_info">
-                  <a href="#">
-                    <h4>
-                      {formInput.name == "" ? "Pinky Ocean" : formInput.name}
-                    </h4>
-                  </a>
-                  <div className="nft__item_price">
-                    {formInput.price == "" ? "0.00" : formInput.price} MATIC
-                    <span>1/20</span>
-                  </div>
-                  <div className="nft__item_action">
-                    <a href="#">Place a bid</a>
-                  </div>
-                  <div className="nft__item_like">
-                    <i className="fa fa-heart"></i>
-                    <span>50</span>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

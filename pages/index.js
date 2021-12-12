@@ -1,9 +1,9 @@
-import Explore from "../components/Explore";
+import Browse from "../components/Browse";
 
 
 export default function Home() {
   return (
-    <Explore/>
+    <Browse/>
   )
 }
 

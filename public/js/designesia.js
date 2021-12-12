@@ -22,22 +22,22 @@
      /* --------------------------------------------------
       * header | sticky
       * --------------------------------------------------*/
-     function header_sticky() {
-         jQuery("header").addClass("clone", 1000, "easeOutBounce");
-         var $document = $(document);
-         var vscroll = 0;
-		 var header = jQuery("header.autoshow");
-         if ($document.scrollTop() >= 50 && vscroll == 0) {
-             header.removeClass("scrollOff");
-             header.addClass("scrollOn");
-             header.css("height", "auto");
-             vscroll = 1;
-         } else {
-             header.removeClass("scrollOn");
-             header.addClass("scrollOff");
-             vscroll = 0;
-         }
-     }
+    //  function header_sticky() {
+    //      jQuery("header").addClass("clone", 1000, "easeOutBounce");
+    //      var $document = $(document);
+    //      var vscroll = 0;
+	// 	 var header = jQuery("header.autoshow");
+    //      if ($document.scrollTop() >= 50 && vscroll == 0) {
+    //          header.removeClass("scrollOff");
+    //          header.addClass("scrollOn");
+    //          header.css("height", "auto");
+    //          vscroll = 1;
+    //      } else {
+    //          header.removeClass("scrollOn");
+    //          header.addClass("scrollOff");
+    //          vscroll = 0;
+    //      }
+    //  }
      /* --------------------------------------------------
       * plugin | magnificPopup
       * --------------------------------------------------*/
@@ -1715,7 +1715,7 @@
           * --------------------------------------------------*/
          jQuery(window).on("scroll", function() {
              /* functions */
-             header_sticky();
+            //  header_sticky();
              de_counter();
              de_progress();
              init();
